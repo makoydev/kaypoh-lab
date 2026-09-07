@@ -104,13 +104,15 @@ config → procedural meshes → scene + camera framing → controls and explain
 order, keyboard shortcuts, mobile layout), Workshop hub with drawing sheets and live preview, hash routing,
 tests + CI.
 
+**Deployed:** https://makoydev.github.io/kaypoh-lab/ via `.github/workflows/deploy.yml` on every push to
+`main` (build uses `VITE_BASE=/kaypoh-lab/`; keep hash routing so Pages needs no rewrites).
+
 **Next, in rough priority:**
-1. Deploy (GitHub Pages or Vercel) and add the URL to the README.
-2. Manual Transmission module (HLD-004): constant-mesh gearbox, synchro animation, gear-ratio readout.
-3. Turbofan (HLD-002): continuous-flow cycle, bypass ratio slider, station temperatures.
-4. Escapement (HLD-003): balance wheel + pallet fork + escape wheel; needs its own timing model.
-5. Nice-to-haves: quiz mode per module, shareable "crank angle" links, optional bloom post-processing,
+1. Manual Transmission module (HLD-004): constant-mesh gearbox, synchro animation, gear-ratio readout.
+2. Turbofan (HLD-002): continuous-flow cycle, bypass ratio slider, station temperatures.
+3. Escapement (HLD-003): balance wheel + pallet fork + escape wheel; needs its own timing model.
+4. Nice-to-haves: quiz mode per module, shareable "crank angle" links, optional bloom post-processing,
    a "compare two cylinders" view.
 
-**Open questions (owner's call):** license, deploy target, whether the app should open on the Workshop or
-straight into the last-used simulation.
+**Open questions (owner's call):** whether the app should open on the Workshop or straight into the
+last-used simulation. (License: MIT. Deploy: GitHub Pages. Both settled.)

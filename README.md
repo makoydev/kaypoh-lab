@@ -2,6 +2,8 @@
 
 **See how things actually jalan inside.**
 
+**Live:** https://makoydev.github.io/kaypoh-lab/
+
 Interactive 3D simulations of mechanical systems, built to show how things work from the inside out.
 First module: a procedurally generated crossplane V8 engine with a full four-stroke cycle.
 
@@ -85,3 +87,12 @@ High-frequency state (crank angle, per-cylinder kinematics) lives in a mutable s
 their own `useFrame`. UI components subscribe through `useSimSnapshot(fps)`, which polls at a gentle
 rate and only re-renders when the angle actually moved. Settings (rpm, view mode, selection…) are
 ordinary React state in `EngineSimulationProvider`.
+
+## Deploy
+
+Every push to `main` runs `.github/workflows/deploy.yml`, which tests, builds with `VITE_BASE=/kaypoh-lab/`,
+and publishes `dist/` to GitHub Pages. Hash routing means no server-side rewrites are needed.
+
+## License
+
+MIT — see `LICENSE`.

@@ -38,3 +38,9 @@ ticks, schematic, title block) and the live module embeds the running engine. Ha
 ## 008 · Test strategy: maths and HUD yes, WebGL no (2026-09-08)
 Vitest + Testing Library for `lib/`, `hooks/`, and HUD components; 3D verified by a browser checklist.
 Consequence: fast, reliable CI; anyone changing 3D code must run the visual checklist in `docs/TESTING.md`.
+
+## 009 · MIT license, GitHub Pages deploy (2026-09-08)
+Owner chose MIT and GitHub Pages. The build takes its base path from `VITE_BASE` (CI sets `/kaypoh-lab/`,
+local dev stays `/`). Hash routing was kept on purpose: Pages cannot rewrite paths, and `#/sim/...` needs
+no server support. Consequence: any future path-based router would break Pages; don't switch without a
+redirect strategy.

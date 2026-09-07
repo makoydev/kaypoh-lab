@@ -3,7 +3,11 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
+// GitHub Pages serves the site from /<repo>/ ; CI sets VITE_BASE, local dev stays at /.
+const base = process.env.VITE_BASE ?? '/'
+
 export default defineConfig({
+  base,
   plugins: [react(), tailwindcss()],
   build: {
     chunkSizeWarningLimit: 1200,
