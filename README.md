@@ -34,6 +34,7 @@ npm run build          # production bundle in dist/
 - `docs/ADDING_A_MODULE.md` — playbook for a new simulation
 - `docs/TESTING.md` — test layers, conventions, visual QA checklist
 - `docs/DECISIONS.md` — decision log
+- `docs/plans/` — approved plans for upcoming modules (next: turbofan)
 
 ## The Workshop
 

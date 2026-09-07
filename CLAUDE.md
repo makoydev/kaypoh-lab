@@ -107,11 +107,13 @@ tests + CI.
 **Deployed:** https://makoydev.github.io/kaypoh-lab/ via `.github/workflows/deploy.yml` on every push to
 `main` (build uses `VITE_BASE=/kaypoh-lab/`; keep hash routing so Pages needs no rewrites).
 
-**Next, in rough priority:**
+**In progress / next up:** Turbofan (HLD-002). Owner approved the plan on 2026-09-08; nothing built yet.
+The full plan is `docs/plans/turbofan.md` — start there, step 1 (pure model + tests).
+
+**Then, in rough priority:**
 1. Manual Transmission module (HLD-004): constant-mesh gearbox, synchro animation, gear-ratio readout.
-2. Turbofan (HLD-002): continuous-flow cycle, bypass ratio slider, station temperatures.
-3. Escapement (HLD-003): balance wheel + pallet fork + escape wheel; needs its own timing model.
-4. Nice-to-haves: quiz mode per module, shareable "crank angle" links, optional bloom post-processing,
+2. Escapement (HLD-003): balance wheel + pallet fork + escape wheel; needs its own timing model.
+3. Nice-to-haves: quiz mode per module, shareable "crank angle" links, optional bloom post-processing,
    a "compare two cylinders" view.
 
 **Open questions (owner's call):** whether the app should open on the Workshop or straight into the
