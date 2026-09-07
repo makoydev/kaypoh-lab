@@ -2,10 +2,12 @@ import { useCallback, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { CatalogModule } from './types/simulation'
 import { EngineSimulationProvider } from './hooks/useEngineSimulation'
+import { TurbofanSimulationProvider } from './hooks/useTurbofanSimulation'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useMediaQuery } from './hooks/useMediaQuery'
 import { useHashRoute } from './hooks/useHashRoute'
 import { V8EngineCanvas } from './components/canvas/V8EngineCanvas'
+import { TurbofanCanvas } from './components/canvas/TurbofanCanvas'
 import { Header } from './components/layout/Header'
 import { SidebarLeft } from './components/layout/SidebarLeft'
 import { SidebarRight } from './components/layout/SidebarRight'
@@ -14,6 +16,15 @@ import { Modal } from './components/layout/Modal'
 import { MobileDock, type Sheet } from './components/layout/MobileDock'
 import { Panel } from './components/ui/Panel'
 import { WorkshopHub } from './components/workshop/WorkshopHub'
+
+/** Turbofan simulation view. HUD panels arrive with the module's controls (plan step 5). */
+function TurbofanSimulation() {
+  return (
+    <div className="absolute inset-0">
+      <TurbofanCanvas />
+    </div>
+  )
+}
 
 function Simulation() {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -62,8 +73,8 @@ function Shell() {
     <div className="relative h-dvh w-full overflow-hidden bg-ink-950 font-sans text-fog-100">
       <AnimatePresence mode="wait" initial={false}>
         {route.name === 'sim' ? (
-          <motion.div key="sim" className="absolute inset-0" initial={{ opacity: 0, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}>
-            <Simulation />
+          <motion.div key={`sim-${route.moduleId}`} className="absolute inset-0" initial={{ opacity: 0, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}>
+            {route.moduleId === 'turbofan' ? <TurbofanSimulation /> : <Simulation />}
           </motion.div>
         ) : (
           <motion.div
@@ -86,7 +97,9 @@ function Shell() {
 export default function App() {
   return (
     <EngineSimulationProvider>
-      <Shell />
+      <TurbofanSimulationProvider>
+        <Shell />
+      </TurbofanSimulationProvider>
     </EngineSimulationProvider>
   )
 }

@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import { VISUAL_TIME_SCALE } from '../../lib/engineConfig'
 import { computeAllCylinders, mod } from '../../lib/kinematics'
 import { useEngine } from '../../hooks/useEngineSimulation'
-import { applyHighlight, useEngineMaterials } from '../3d/materials'
+import { PART_MATERIALS, applyHighlight, useEngineMaterials } from '../3d/materials'
 
 /**
  * Advances the crank and recomputes every cylinder once per frame, before any mesh reads it.
@@ -21,7 +21,7 @@ export function SimulationDriver() {
       sim.angle = mod(sim.angle + degPerSec * step, 720)
     }
     sim.cylinders = computeAllCylinders(sim.angle)
-    applyHighlight(materials, s.selectedPart, s.hoveredPart, step)
+    applyHighlight(materials, PART_MATERIALS, s.selectedPart, s.hoveredPart, step)
   }, -10)
 
   return null

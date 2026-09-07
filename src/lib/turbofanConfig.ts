@@ -11,10 +11,10 @@ export const TF = {
     tipRadius: 1.9,
     hubRadius: 0.62,
     blades: 22,
-    chord: 0.62,
+    chord: 0.4,
     /** Blade stagger from the axial direction, root → tip, degrees. Tips lean over further. */
-    staggerRoot: 24,
-    staggerTip: 58,
+    staggerRoot: 30,
+    staggerTip: 56,
   },
   spinner: { length: 1.0, radius: 0.62 },
   nacelle: {
@@ -260,7 +260,7 @@ export function coreAnnulusAt(x: number) {
 }
 
 export function bypassAnnulusAt(x: number) {
-  const inner = x < TF.splitter.x ? hubRadiusAt(x) : coreOuterRadiusAt(x)
+  const inner = x < TF.splitter.x ? TF.splitter.radius : coreOuterRadiusAt(x)
   return { inner, outer: TF.nacelle.innerRadius }
 }
 

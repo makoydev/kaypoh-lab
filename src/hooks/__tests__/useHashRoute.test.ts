@@ -18,6 +18,11 @@ describe('parseRoute', () => {
     expect(parseRoute('#/sim/does-not-exist')).toEqual({ name: 'hub' })
   })
 
+  it('lets dev builds open drafts, but never unknown modules', () => {
+    expect(parseRoute('#/sim/turbofan', true)).toEqual({ name: 'sim', moduleId: 'turbofan' })
+    expect(parseRoute('#/sim/does-not-exist', true)).toEqual({ name: 'hub' })
+  })
+
   it('round-trips through routeToHash', () => {
     const sim = { name: 'sim', moduleId: 'v8-engine' } as const
     expect(parseRoute(routeToHash(sim))).toEqual(sim)

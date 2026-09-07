@@ -144,15 +144,26 @@ export function useEngineMaterials() {
   return ctx
 }
 
-/** Smoothly pushes hover / selection highlight into the relevant shared materials. */
-export function applyHighlight(materials: MaterialSet, selected: PartId | null, hovered: PartId | null, dt: number) {
-  const targetFor = (key: MaterialKey) => {
-    if (selected && PART_MATERIALS[selected].includes(key)) return 0.45
-    if (hovered && PART_MATERIALS[hovered].includes(key)) return 0.25
+export const HIGHLIGHT_COLOR = HIGHLIGHT
+
+/**
+ * Smoothly pushes hover / selection highlight into the relevant shared materials. Generic over the
+ * module's material keys and part ids so every module shares one implementation.
+ */
+export function applyHighlight<K extends string, P extends string>(
+  materials: Record<K, THREE.Material>,
+  partMaterials: Record<P, K[]>,
+  selected: P | null,
+  hovered: P | null,
+  dt: number,
+) {
+  const targetFor = (key: K) => {
+    if (selected && partMaterials[selected].includes(key)) return 0.45
+    if (hovered && partMaterials[hovered].includes(key)) return 0.25
     return 0
   }
   const k = 1 - Math.exp(-dt * 14)
-  for (const key of Object.keys(materials) as MaterialKey[]) {
+  for (const key of Object.keys(materials) as K[]) {
     const mat = materials[key]
     const target = targetFor(key)
     const current = (mat.userData.highlight as number | undefined) ?? 0
@@ -167,3 +178,6 @@ export function applyHighlight(materials: MaterialSet, selected: PartId | null, 
     }
   }
 }
+
+/** Material factories shared with other modules' material sets. */
+export const materialFactories = { metal, ghost, wire }

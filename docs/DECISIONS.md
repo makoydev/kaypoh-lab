@@ -44,3 +44,19 @@ Owner chose MIT and GitHub Pages. The build takes its base path from `VITE_BASE`
 local dev stays `/`). Hash routing was kept on purpose: Pages cannot rewrite paths, and `#/sim/...` needs
 no server support. Consequence: any future path-based router would break Pages; don't switch without a
 redirect strategy.
+
+## 010 · One store per module, same shape (2026-09-08)
+The turbofan gets its own `TurbofanSimulationProvider` / `useTurbofan` / `useTurbofanSnapshot` rather than
+extending `EngineSettings`. Part ids, view modes, and the "focus" concept are module-specific; a union type
+would make every V8 component (materials, inspector, camera) handle turbofan cases. Both providers mount at
+the app root so state persists across routes, and shared behaviour (part click/hover handlers, camera
+fly-to, material highlighting) lives in generic helpers used by both. `docs/ADDING_A_MODULE.md` step 3 now
+says this. Consequence: a third module copies the ~120-line provider; if that grows tiresome, generalise then.
+
+## 011 · Turbofan axis, time scale, and spool direction (2026-09-08)
+Engine axis is +X with air flowing −X → +X so the 3D view, the station strip, and the schematic all read
+left to right. Visual time scale is 1:60 (`TURBOFAN_VISUAL_TIME_SCALE`): at 100 % N1 the fan turns about once
+a second on screen, slow enough to count blades. Both spools turn the same way for simplicity (many real
+engines counter-rotate; the model does not care). The cycle model is ideal-gas Brayton with polytropic
+efficiencies and an exact work balance between each turbine and the compressors it drives; static thrust,
+fuel mass ignored. Honest and teachable, not a performance deck.

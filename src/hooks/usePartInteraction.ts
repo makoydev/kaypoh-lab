@@ -1,33 +1,55 @@
 import { useCallback } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
 import type { PartId } from '../types/simulation'
+import type { TurbofanPartId } from '../types/turbofan'
 import { useEngine } from './useEngineSimulation'
+import { useTurbofan } from './useTurbofanSimulation'
 
-/** Click/hover handlers that wire a mesh (or group) to the Part Inspector. */
-export function usePartInteraction(part: PartId) {
-  const { selectPart, hoverPart, settingsRef } = useEngine()
+interface PartSelectionApi<P extends string> {
+  selectPart: (part: P | null) => void
+  hoverPart: (part: P | null) => void
+  current: () => { selected: P | null; hovered: P | null }
+}
+
+/** Click toggles selection, hover sets the pointer cursor and the hovered part. Shared by every module. */
+function usePartHandlers<P extends string>(part: P, api: PartSelectionApi<P>) {
+  const { selectPart, hoverPart, current } = api
 
   const onClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
       e.stopPropagation()
-      selectPart(settingsRef.current.selectedPart === part ? null : part)
+      selectPart(current().selected === part ? null : part)
     },
-    [part, selectPart, settingsRef],
+    [part, selectPart, current],
   )
 
   const onPointerOver = useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       document.body.style.cursor = 'pointer'
-      if (settingsRef.current.hoveredPart !== part) hoverPart(part)
+      if (current().hovered !== part) hoverPart(part)
     },
-    [part, hoverPart, settingsRef],
+    [part, hoverPart, current],
   )
 
   const onPointerOut = useCallback(() => {
     document.body.style.cursor = 'auto'
-    if (settingsRef.current.hoveredPart === part) hoverPart(null)
-  }, [part, hoverPart, settingsRef])
+    if (current().hovered === part) hoverPart(null)
+  }, [part, hoverPart, current])
 
   return { onClick, onPointerOver, onPointerOut }
+}
+
+/** Click/hover handlers that wire a V8 mesh (or group) to the Part Inspector. */
+export function usePartInteraction(part: PartId) {
+  const { selectPart, hoverPart, settingsRef } = useEngine()
+  const current = useCallback(() => ({ selected: settingsRef.current.selectedPart, hovered: settingsRef.current.hoveredPart }), [settingsRef])
+  return usePartHandlers(part, { selectPart, hoverPart, current })
+}
+
+/** Same, for the turbofan. */
+export function useTurbofanPartInteraction(part: TurbofanPartId) {
+  const { selectPart, hoverPart, settingsRef } = useTurbofan()
+  const current = useCallback(() => ({ selected: settingsRef.current.selectedPart, hovered: settingsRef.current.hoveredPart }), [settingsRef])
+  return usePartHandlers(part, { selectPart, hoverPart, current })
 }

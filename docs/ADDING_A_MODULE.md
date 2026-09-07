@@ -23,9 +23,11 @@ Add or update the `CatalogModule`: `code` (next `HLD-00x`), `tagline`, `descript
 
 ## 3. Store integration
 
-Reuse the pattern in `hooks/useEngineSimulation.tsx`: a mutable store advanced by a driver in `useFrame`
-at negative priority, a snapshot hook for the UI, and React state for settings. If the new module needs
-different settings, extend the settings type rather than inventing a second store.
+Copy the pattern in `hooks/useEngineSimulation.tsx` (see `useTurbofanSimulation.tsx` for the second
+instance): a mutable store advanced by a driver in `useFrame` at negative priority, a snapshot hook for the
+UI, and React state for settings. Each module gets its own provider and part-id type (decision 010); mount it
+at the app root next to the others so state persists across routes. Share behaviour through the generic
+helpers (`usePartInteraction`, `applyHighlight`, `useFlyTo`) rather than by widening another module's types.
 
 ## 4. Geometries and materials — `components/3d/`
 

@@ -23,16 +23,16 @@ export function StudioEnvironment({ resolution = 256 }: { resolution?: number })
 }
 
 /** Full scene dressing for the simulation view: background, fog, studio lights, floor grid and shadows. */
-export function Lighting() {
+export function Lighting({ floorY = FLOOR_Y, shadowScale = 16 }: { floorY?: number; shadowScale?: number }) {
   return (
     <>
       <color attach="background" args={['#07090c']} />
       <fog attach="fog" args={['#07090c', 22, 48]} />
       <StudioEnvironment />
 
-      <ContactShadows position={[0, FLOOR_Y + 0.005, 0]} opacity={0.6} scale={16} blur={2.6} far={4.5} resolution={512} color="#000000" />
+      <ContactShadows position={[0, floorY + 0.005, 0]} opacity={0.6} scale={shadowScale} blur={2.6} far={4.5} resolution={512} color="#000000" />
       <Grid
-        position={[0, FLOOR_Y, 0]}
+        position={[0, floorY, 0]}
         args={[40, 40]}
         cellSize={0.5}
         cellThickness={0.6}
