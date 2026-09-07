@@ -37,7 +37,7 @@ export const MODULES: CatalogModule[] = [
       'Why the compressor blades get smaller as you go back',
       'How the turbine steals energy to spin the front end',
     ],
-    progress: 35,
+    progress: 45,
     accent: '#a78bfa',
   },
   {
