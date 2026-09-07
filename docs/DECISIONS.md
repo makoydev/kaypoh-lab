@@ -60,3 +60,11 @@ a second on screen, slow enough to count blades. Both spools turn the same way f
 engines counter-rotate; the model does not care). The cycle model is ideal-gas Brayton with polytropic
 efficiencies and an exact work balance between each turbine and the compressors it drives; static thrust,
 fuel mass ignored. Honest and teachable, not a performance deck.
+
+## 012 · Turbofan casings are 270° sections, blade rows are instanced lofts (2026-09-08)
+Instead of ghost-only casings, every turbofan shell (nacelle, core casing, nozzle, combustor liner) is a
+`LatheGeometry` revolved through 270° with flat orange section caps, so a solid casing still shows the
+machinery — the museum-cutaway look. Every blade row is a single `InstancedMesh` of one lofted airfoil
+blade scaled per row, and the whole airflow is one instanced streak mesh (~1,100 instances) coloured by local
+temperature. Consequence: ~40 draw calls for the whole engine and 60 fps on a laptop GPU; the wedge is fixed
+to the engine (+Y/+Z quadrant), so the default camera and stage-focus framings sit on that side.

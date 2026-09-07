@@ -5,7 +5,8 @@
 **Live:** https://makoydev.github.io/kaypoh-lab/
 
 Interactive 3D simulations of mechanical systems, built to show how things work from the inside out.
-First module: a procedurally generated crossplane V8 engine with a full four-stroke cycle.
+Live modules: a procedurally generated crossplane V8 engine with a full four-stroke cycle, and a two-spool
+high-bypass turbofan with a live thermodynamic cycle.
 
 ## Stack
 
@@ -44,6 +45,22 @@ engineering drawing sheet: frame ticks, a blueprint schematic (the live module s
 "Open simulation" takes you to `#/sim/v8-engine`; the back arrow in the header returns to the Workshop.
 Engine state (rpm, crank angle, view mode) persists between the two.
 
+## What the Turbofan module does
+
+- **Cycle model** — a two-spool Brayton cycle in pure, tested maths: fan / booster / HP compressor pressure
+  ratios that scale with spool speed, ideal-gas temperature rises, a combustor scheduled with N1, and
+  turbines that take back exactly the work their compressors spent. Outputs pressure and temperature at
+  every station, the bypass/core thrust split, jet velocities, fuel flow and fuel-per-kN.
+- **Controls** — throttle as N1 %, bypass ratio 2–12 (watch fuel-per-kN fall), thrust split, station strip
+  (temperature bars + pressure multiples along the engine), part inspector, suck–squeeze–bang–blow explainer.
+- **3D** — nacelle and casings sectioned through 270° like a museum cutaway, 22-blade fan, booster, 8-stage
+  HP compressor, annular combustor with a live flame, HP + LP turbines, exhaust cone, and one instanced
+  streak field showing the air, coloured by temperature. View modes: cutaway, x-ray, stage focus.
+- **Time scale** — 1:60 so the fan turns about once a second at takeoff.
+
+Keyboard: `Space` play/pause · `←` `→` N1 ∓/± 1 % (`Shift` for 5 %) · `1` `2` `3` view modes · `C` casing ·
+`F` air flow · `R` reset camera · `Esc` clear selection.
+
 ## What the V8 module does
 
 - **Kinematics** — 8 pistons driven by exact slider-crank math (`s = r·cos θ + √(l² − r²·sin²θ)`) off a
@@ -67,17 +84,23 @@ Keyboard: `Space` play/pause · `←` `→` step 1° (`Shift` for 10°) · `1` `
 src/
 ├── components/
 │   ├── layout/      Header, SidebarLeft, SidebarRight, StatusBar, Modal, MobileDock, ModuleSelector
-│   ├── canvas/      V8EngineCanvas, EngineScene, EngineAssembly, Lighting, CameraRig, SimulationDriver
+│   ├── canvas/      V8EngineCanvas, EngineScene, EngineAssembly, Lighting, CameraRig, SimulationDriver,
+│   │                TurbofanCanvas, TurbofanScene, TurbofanAssembly, TurbofanCameraRig, TurbofanDriver, useFlyTo
 │   ├── 3d/          Crankshaft, Piston, ConnectingRod, EngineBlock, SparkPlug, Valves, SparkEffect,
 │   │                FocusLabels, materials (per-view-mode material sets), geometries (shared buffers)
+│   │   └── turbofan/  Casings, Spools, BladeRow, FlowParticles, CombustionGlow, StageLabels,
+│   │                  materials, geometries, bladeGeometry
 │   ├── controls/    PlaybackControls, ThrottleSlider, StrokeStepper, FiringOrder, ViewModes, PartInspector
-│   ├── education/   HowLikeDatWork, StrokeDiagram
-│   ├── workshop/    WorkshopHub, DrawingSheet, ModuleSchematic, LearningPath, V8LivePreview
+│   │   └── turbofan/  N1Throttle, BypassRatioSlider, ThrustSplit, StationStrip, TurbofanViewModes, …
+│   ├── education/   HowLikeDatWork, StrokeDiagram · turbofan/ HowTurbofanWork, FlowSchematic
+│   ├── workshop/    WorkshopHub, DrawingSheet, ModuleSchematic, LearningPath, V8LivePreview, TurbofanLivePreview
 │   └── ui/          Panel, Button, Slider, SegmentedControl, Toggle, Badge, MetricCard, Tooltip, Kbd
-├── hooks/           useEngineSimulation (store + provider), useKinematics, usePartInteraction,
-│                    useKeyboardShortcuts, useFullscreen, useMediaQuery, useHashRoute
-├── lib/             engineConfig (geometry, firing order), kinematics (pure math), partInfo, strokeInfo, modules
-├── types/           simulation.ts
+├── hooks/           useEngineSimulation + useTurbofanSimulation (stores + providers), useKinematics,
+│                    usePartInteraction, useKeyboardShortcuts, useTurbofanKeyboardShortcuts, useFullscreen,
+│                    useMediaQuery, useHashRoute
+├── lib/             engineConfig, kinematics, partInfo, strokeInfo, modules,
+│                    turbofanConfig, turbofanModel, turbofanInfo, flowVis, airfoil
+├── types/           simulation.ts, turbofan.ts
 └── App.tsx
 ```
 

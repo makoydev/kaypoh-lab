@@ -44,3 +44,20 @@ depends on is fully tested one layer down.
 8. Back arrow returns to the Workshop with the engine state preserved.
 9. Narrow the window below 1024 px: dock appears, sheets open, camera backs off.
 10. Console: only Three's `THREE.Clock` deprecation warning from the fiber library is expected.
+
+### Turbofan (`#/sim/turbofan`)
+
+11. Engine running: fan and both spools turning (HP visibly faster), flow streaks moving left → right,
+    bypass streaks blue, core streaks warming to ember through the combustor, plume behind the nozzle.
+12. View modes `1` `2` `3`: cutaway with 270° sectioned casings (hidden/ghost/solid via `C`, orange cut
+    faces only when solid), x-ray wireframe coloured by stage, stage focus isolating one stage with in/out
+    pressure + temperature labels that don't hide behind the header.
+13. Click a fan blade, the combustor liner, a turbine row, the exhaust cone, the solid nacelle: correct chip
+    lights in the inspector. Ghost/wireframe casing never steals the click. Esc clears.
+14. Throttle to takeoff (`Shift+→`): status bar climbs (thrust, ×pressure, burner °C), flame and plume
+    brighten, station strip bars grow. Slide bypass ratio 2 → 12: fan share and fuel-per-kN move the right way.
+15. Station strip: click a station → stage focus on the stage that ends there. Explainer "Show in 3D" does
+    the same for a phase; "Follow the 3D focus" switches tabs with the focus stage.
+16. `F` hides the streaks; back arrow returns to the Workshop with both live previews turning and the
+    turbofan state preserved.
+17. Narrow the window below 1024 px: dock appears, both sheets open, camera backs off.

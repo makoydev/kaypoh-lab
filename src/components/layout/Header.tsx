@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, Keyboard, Maximize2, Minimize2, RotateCcw } from 'lucide-react'
-import { useEngine } from '../../hooks/useEngineSimulation'
 import { useFullscreen } from '../../hooks/useFullscreen'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
@@ -40,7 +39,17 @@ function Logo({ onClick }: { onClick?: () => void }) {
   )
 }
 
-function ShortcutsPopover() {
+export const V8_SHORTCUTS: [string[], string][] = [
+  [['Space'], 'Play / pause'],
+  [['←', '→'], 'Step 1° when paused'],
+  [['Shift', '←/→'], 'Step 10°'],
+  [['1', '2', '3'], 'Cutaway / X-ray / Piston focus'],
+  [['C'], 'Cycle casing'],
+  [['R'], 'Reset camera'],
+  [['Esc'], 'Clear selection'],
+]
+
+function ShortcutsPopover({ rows }: { rows: [string[], string][] }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -49,16 +58,6 @@ function ShortcutsPopover() {
     document.addEventListener('mousedown', onDown)
     return () => document.removeEventListener('mousedown', onDown)
   }, [open])
-
-  const rows: [string[], string][] = [
-    [['Space'], 'Play / pause'],
-    [['←', '→'], 'Step 1° when paused'],
-    [['Shift', '←/→'], 'Step 10°'],
-    [['1', '2', '3'], 'Cutaway / X-ray / Piston focus'],
-    [['C'], 'Cycle casing'],
-    [['R'], 'Reset camera'],
-    [['Esc'], 'Clear selection'],
-  ]
 
   return (
     <div ref={ref} className="relative hidden md:block">
@@ -101,10 +100,13 @@ interface HeaderProps {
   variant: 'sim' | 'hub'
   onBrowse: () => void
   onOpenModule: (id: string) => void
+  /** Module currently open in the simulation view, if any. */
+  currentModuleId?: string
+  onResetCamera?: () => void
+  shortcuts?: [string[], string][]
 }
 
-export function Header({ variant, onBrowse, onOpenModule }: HeaderProps) {
-  const { resetCamera } = useEngine()
+export function Header({ variant, onBrowse, onOpenModule, currentModuleId, onResetCamera, shortcuts = V8_SHORTCUTS }: HeaderProps) {
   const { isFullscreen, toggle, supported } = useFullscreen()
   const sim = variant === 'sim'
 
@@ -126,11 +128,11 @@ export function Header({ variant, onBrowse, onOpenModule }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <ModuleSelector onOpenModule={onOpenModule} onBrowse={onBrowse} />
+          <ModuleSelector onOpenModule={onOpenModule} onBrowse={onBrowse} currentModuleId={currentModuleId} />
           <div className="mx-1 hidden h-6 w-px bg-white/[0.08] sm:block" />
-          {sim && (
+          {sim && onResetCamera && (
             <Tooltip content="Reset camera (R)">
-              <Button size="icon" variant="ghost" onClick={resetCamera} aria-label="Reset camera">
+              <Button size="icon" variant="ghost" onClick={onResetCamera} aria-label="Reset camera">
                 <RotateCcw className="size-4" />
               </Button>
             </Tooltip>
@@ -142,7 +144,7 @@ export function Header({ variant, onBrowse, onOpenModule }: HeaderProps) {
               </Button>
             </Tooltip>
           )}
-          {sim && <ShortcutsPopover />}
+          {sim && <ShortcutsPopover rows={shortcuts} />}
         </div>
       </div>
     </header>

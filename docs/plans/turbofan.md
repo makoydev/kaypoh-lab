@@ -1,6 +1,6 @@
 # Plan: Turbofan Jet Engine (HLD-002)
 
-Status: **in progress — step 1 done (model + config + tests, 2026-09-08)**; next: step 2 store. Follow `docs/ADDING_A_MODULE.md`; the V8 is the
+Status: **released (2026-09-08)**. All nine steps done; visual QA checklist (`docs/TESTING.md` items 11–17) passed; `status: 'active'`, deployed by CI on push to `main`. Follow `docs/ADDING_A_MODULE.md`; the V8 is the
 reference implementation. Update this file as steps complete, and flip the module to `active` only at step 9.
 
 ## Learning objectives (write these into `lib/modules.ts` `learn` if they change)

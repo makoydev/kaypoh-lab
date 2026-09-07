@@ -8,12 +8,14 @@ import { Badge } from '../ui/Badge'
 interface ModuleSelectorProps {
   onOpenModule: (id: string) => void
   onBrowse: () => void
+  /** Module shown in the trigger; defaults to the first live module. */
+  currentModuleId?: string
 }
 
-export function ModuleSelector({ onOpenModule, onBrowse }: ModuleSelectorProps) {
+export function ModuleSelector({ onOpenModule, onBrowse, currentModuleId }: ModuleSelectorProps) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const active = MODULES.find((m) => m.status === 'active')!
+  const active = MODULES.find((m) => m.id === currentModuleId) ?? MODULES.find((m) => m.status === 'active')!
 
   useEffect(() => {
     if (!open) return
@@ -60,8 +62,9 @@ export function ModuleSelector({ onOpenModule, onBrowse }: ModuleSelectorProps) 
             <li className="px-2.5 pb-1.5 pt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-fog-700">Catalog</li>
             {MODULES.map((m) => {
               const isActive = m.status === 'active'
+              const isCurrent = m.id === active.id
               return (
-                <li key={m.id} role="option" aria-selected={isActive} aria-disabled={!isActive}>
+                <li key={m.id} role="option" aria-selected={isCurrent} aria-disabled={!isActive}>
                   <button
                     type="button"
                     disabled={!isActive}
@@ -74,13 +77,13 @@ export function ModuleSelector({ onOpenModule, onBrowse }: ModuleSelectorProps) 
                       isActive ? 'bg-accent/10 hover:bg-accent/15' : 'cursor-not-allowed opacity-55',
                     )}
                   >
-                    <span className={cn('mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md', isActive ? 'bg-accent text-ink-950' : 'bg-white/[0.06] text-fog-500')}>
-                      {isActive ? <Check className="size-3.5" strokeWidth={3} /> : <Lock className="size-3" />}
+                    <span className={cn('mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md', isCurrent ? 'bg-accent text-ink-950' : isActive ? 'bg-accent/20 text-accent' : 'bg-white/[0.06] text-fog-500')}>
+                      {isCurrent ? <Check className="size-3.5" strokeWidth={3} /> : isActive ? <span className="size-1.5 rounded-full bg-accent" /> : <Lock className="size-3" />}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-2">
                         <span className="text-xs font-medium text-fog-100">{m.name}</span>
-                        {isActive ? <Badge>Active</Badge> : <Badge tone="muted">Coming soon</Badge>}
+                        {isCurrent ? <Badge>Open</Badge> : isActive ? <Badge tone="muted">Live</Badge> : <Badge tone="muted">Coming soon</Badge>}
                       </span>
                       <span className="mt-0.5 block text-[11px] leading-snug text-fog-500">{m.description}</span>
                     </span>

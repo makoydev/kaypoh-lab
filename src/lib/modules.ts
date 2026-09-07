@@ -27,7 +27,7 @@ export const MODULES: CatalogModule[] = [
     tagline: 'Suck, squeeze, bang, blow — but never stops.',
     description:
       'Fan, compressor, combustor, turbine, nozzle. The same four ideas as the V8, except everything happens at once and nothing goes up and down.',
-    status: 'upcoming',
+    status: 'active',
     category: 'Propulsion',
     difficulty: 3,
     minutes: 15,
@@ -37,7 +37,6 @@ export const MODULES: CatalogModule[] = [
       'Why the compressor blades get smaller as you go back',
       'How the turbine steals energy to spin the front end',
     ],
-    progress: 45,
     accent: '#a78bfa',
   },
   {

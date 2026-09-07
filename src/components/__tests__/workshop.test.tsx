@@ -20,10 +20,10 @@ describe('DrawingSheet', () => {
   })
 
   it('renders a draft sheet without an Open button', () => {
-    const turbofan = moduleById('turbofan')!
-    render(<DrawingSheet module={turbofan} />)
+    const draft = moduleById('escapement')!
+    render(<DrawingSheet module={draft} />)
     expect(screen.getByText(/in drafting/i)).toBeInTheDocument()
-    expect(screen.getByText(`Draft · ${turbofan.progress}%`)).toBeInTheDocument()
+    expect(screen.getByText(`Draft · ${draft.progress}%`)).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /open simulation/i })).not.toBeInTheDocument()
   })
 })
@@ -45,7 +45,7 @@ describe('LearningPath', () => {
     render(<LearningPath modules={MODULES} onOpen={onOpen} />)
     const buttons = screen.getAllByRole('button')
     expect(buttons).toHaveLength(4)
-    expect(buttons.filter((b) => !(b as HTMLButtonElement).disabled)).toHaveLength(1)
+    expect(buttons.filter((b) => !(b as HTMLButtonElement).disabled)).toHaveLength(2)
     await user.click(buttons[0])
     expect(onOpen).toHaveBeenCalledWith(ACTIVE_MODULE)
   })

@@ -12,8 +12,8 @@ describe('module catalog', () => {
     expect(new Set(codes).size).toBe(codes.length)
   })
 
-  it('has exactly one live module, the V8', () => {
-    expect(MODULES.filter((m) => m.status === 'active')).toHaveLength(1)
+  it('lists the live modules with the V8 first', () => {
+    expect(MODULES.filter((m) => m.status === 'active').map((m) => m.id)).toEqual(['v8-engine', 'turbofan'])
     expect(ACTIVE_MODULE.id).toBe('v8-engine')
   })
 

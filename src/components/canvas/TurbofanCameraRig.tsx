@@ -8,8 +8,8 @@ import { useTurbofan } from '../../hooks/useTurbofanSimulation'
 import { backOffFor, useFlyTo } from './useFlyTo'
 
 /** Front-left, above, on the side the cutaway wedge opens toward. Air flows left → right on screen. */
-export const TURBOFAN_CAMERA_POSITION: [number, number, number] = [-4.2, 3.1, 9.4]
-export const TURBOFAN_TARGET: [number, number, number] = [0.5, 0, 0]
+export const TURBOFAN_CAMERA_POSITION: [number, number, number] = [-4.4, 3.2, 10.8]
+export const TURBOFAN_TARGET: [number, number, number] = [0.7, -0.1, 0]
 
 /** Direction the camera sits in relative to a focused stage, normalised. */
 const FOCUS_DIR = new THREE.Vector3(-0.42, 0.62, 1).normalize()
@@ -23,7 +23,7 @@ function goalFor(viewMode: TurbofanViewMode, stage: StageId, aspect: number) {
   }
   const e = STAGE_EXTENT[stage]
   const target = new THREE.Vector3((e.xStart + e.xEnd) / 2, 0.1, 0)
-  const distance = Math.max(2.8, e.radius * 2.4 + (e.xEnd - e.xStart) * 0.7) * backOff
+  const distance = Math.max(3.6, e.radius * 3.4 + (e.xEnd - e.xStart) * 0.9) * backOff
   const position = target.clone().add(FOCUS_DIR.clone().multiplyScalar(distance))
   return { position, target }
 }

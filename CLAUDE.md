@@ -15,7 +15,7 @@ simulations that show how machines work from the inside out. Repo: `makoydev/kay
   Cyan `#22d3ee` is the CAD accent, ember `#fb923c` is combustion, amber is selection.
 
 Two views, hash-routed: the **Workshop** (`#/`, browsable catalog of modules as engineering drawing sheets)
-and a **Simulation** (`#/sim/<module-id>`). First and only live module: the V8 engine.
+and a **Simulation** (`#/sim/<module-id>`). Live modules: the V8 engine (HLD-001) and the turbofan (HLD-002).
 
 ## Start here (every session)
 
@@ -34,15 +34,18 @@ These are the load-bearing rules. Follow them unless a decision entry says other
 2. **Physics is pure math in `src/lib/`, and it is tested.** Kinematics never live in components. A mesh
    reads pre-computed state and positions itself; it does not compute. New mechanisms get a `lib/*.ts`
    module with unit tests before they get meshes.
-3. **High-frequency state lives outside React.** The sim store (`useEngineSimulation.tsx`) is mutated once
-   per frame by `SimulationDriver` (negative `useFrame` priority so it runs first). UI reads it through
-   `useSimSnapshot(fps)`, which re-renders only when the angle moved. Settings (rpm, view mode, selection)
-   are ordinary React state. Never put per-frame values in React state.
+3. **High-frequency state lives outside React.** Each module has a store (`useEngineSimulation.tsx`,
+   `useTurbofanSimulation.tsx`) mutated once per frame by its driver (negative `useFrame` priority so it runs
+   first). UI reads it through a snapshot hook that re-renders only when something moved. Settings (rpm/N1,
+   view mode, selection) are ordinary React state. Never put per-frame values in React state. One store per
+   module, same shape (decision 010); shared behaviour goes in generic helpers, not union types.
 4. **Config drives geometry.** Dimensions, firing order, and derived values (pin offsets, journal
-   positions) come from `lib/engineConfig.ts`. Meshes and math read the same constants so they can't drift.
-5. **Shared materials and geometries.** Materials are built per view mode in `components/3d/materials.tsx`;
-   geometries are singletons in `components/3d/geometries.ts`. Highlighting is done by mutating the shared
-   material, not by cloning per mesh.
+   positions, blade-row radii, flow-path lines) come from `lib/engineConfig.ts` / `lib/turbofanConfig.ts`.
+   Meshes and math read the same constants so they can't drift.
+5. **Shared materials and geometries.** Materials are built per view mode (`components/3d/materials.tsx`,
+   `components/3d/turbofan/materials.tsx`); geometries are singletons in `geometries.ts` files. Highlighting
+   is done by mutating the shared material (`applyHighlight`), not by cloning per mesh. Repeated parts (blade
+   rows, flow streaks) are one `InstancedMesh` each.
 6. **Content is data.** Module catalog, part explainers, stroke explainers live in `lib/*.ts` as typed
    objects and are validated by tests. Copy changes never require touching components.
 7. **Interactivity is explicit.** Clickable parts use `usePartInteraction(partId)`. Anything translucent
@@ -64,8 +67,8 @@ These are the load-bearing rules. Follow them unless a decision entry says other
   `renderWithEngine` helper. Test behaviour through roles and visible text, not implementation.
   `AnimatePresence mode="wait"` means use `findBy*` after a click that swaps content.
 - **3D and canvas code**: not unit tested (WebGL in jsdom is not worth it). Verify visually in the browser
-  after any change: all three view modes, casing states, click-to-select on a piston and the crank, piston
-  focus labels, and the Workshop live preview. Check the console for THREE/WebGL errors.
+  after any change: all three view modes, casing states, click-to-select, focus labels, and the Workshop live
+  previews, for every live module. Check the console for THREE/WebGL errors.
 - `npm run check` is the definition of done. CI (`.github/workflows/ci.yml`) runs the same.
 
 See `docs/TESTING.md` for the environment stubs and the visual QA checklist.
@@ -95,25 +98,32 @@ config → procedural meshes → scene + camera framing → controls and explain
 - Port 5173 is often occupied on the owner's machine; use `--port 5179 --strictPort`.
 - When Claude drives Chrome through the browser tools, that tab is usually hidden: `requestAnimationFrame`
   does not fire, so the sim only advances when a screenshot forces a frame and Framer transitions stall.
-  Judge motion by comparing successive screenshots; don't diagnose it as a bug.
+  Judge motion by comparing successive screenshots; don't diagnose it as a bug. Camera fly-tos need several
+  screenshots to converge.
+- Vite HMR after editing a provider/context file can leave two copies of the context ("must be used inside
+  <…Provider>"). A full page reload fixes it; it is not a code bug.
+- Draft modules are routable in dev only (`parseRoute(hash, import.meta.env.DEV)`), so a module can be built
+  and viewed at `#/sim/<id>` before it is flipped to `active`.
 - Vite 8 uses rolldown: `manualChunks` must be a function (see `vite.config.ts`).
 
 ## Roadmap (keep this current)
 
 **Done:** V8 simulation (kinematics, four-stroke, three view modes, inspector, explainer, stepper, firing
-order, keyboard shortcuts, mobile layout), Workshop hub with drawing sheets and live preview, hash routing,
+order, keyboard shortcuts, mobile layout), Turbofan simulation (HLD-002: two-spool cycle model, sectioned
+procedural 3D, instanced blade rows, temperature-coloured flow streaks, stage focus, N1 / bypass-ratio
+controls, station strip, explainer), Workshop hub with drawing sheets and live previews, hash routing,
 tests + CI.
 
 **Deployed:** https://makoydev.github.io/kaypoh-lab/ via `.github/workflows/deploy.yml` on every push to
 `main` (build uses `VITE_BASE=/kaypoh-lab/`; keep hash routing so Pages needs no rewrites).
 
-**In progress / next up:** Turbofan (HLD-002). Owner approved the plan on 2026-09-08; nothing built yet.
-The full plan is `docs/plans/turbofan.md` — start there, step 1 (pure model + tests).
-
-**Then, in rough priority:**
+**Next up, in rough priority:**
 1. Manual Transmission module (HLD-004): constant-mesh gearbox, synchro animation, gear-ratio readout.
+   Follow `docs/ADDING_A_MODULE.md`; the turbofan is the reference for a second-module build.
 2. Escapement (HLD-003): balance wheel + pallet fork + escape wheel; needs its own timing model.
-3. Nice-to-haves: quiz mode per module, shareable "crank angle" links, optional bloom post-processing,
+3. Turbofan polish ideas: counter-rotating spool option, a "compare bypass ratios" side-by-side, blade-row
+   velocity triangles in stage focus, bloom on the flame.
+4. Nice-to-haves: quiz mode per module, shareable state links, optional bloom post-processing,
    a "compare two cylinders" view.
 
 **Open questions (owner's call):** whether the app should open on the Workshop or straight into the

@@ -15,7 +15,8 @@ describe('ModuleSelector', () => {
     await user.click(screen.getByRole('button', { name: /v8 engine/i }))
     expect(screen.getByRole('listbox')).toBeInTheDocument()
     expect(screen.getAllByRole('option')).toHaveLength(4)
-    expect(screen.getByRole('option', { name: /turbofan/i })).toHaveAttribute('aria-disabled', 'true')
+    expect(screen.getByRole('option', { name: /turbofan/i })).toHaveAttribute('aria-disabled', 'false')
+    expect(screen.getByRole('option', { name: /escapement/i })).toHaveAttribute('aria-disabled', 'true')
     await user.click(screen.getByRole('button', { name: /browse the workshop/i }))
     expect(onBrowse).toHaveBeenCalled()
   })
@@ -24,11 +25,11 @@ describe('ModuleSelector', () => {
 describe('Header', () => {
   it('shows a back button and sim tools only in the sim variant', () => {
     const onBrowse = vi.fn()
-    const { unmount } = renderWithEngine(<Header variant="sim" onBrowse={onBrowse} onOpenModule={vi.fn()} />)
+    const { unmount } = renderWithEngine(<Header variant="sim" onBrowse={onBrowse} onOpenModule={vi.fn()} onResetCamera={vi.fn()} />)
     expect(screen.getByRole('button', { name: /back to the workshop/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /reset camera/i })).toBeInTheDocument()
     unmount()
-    renderWithEngine(<Header variant="hub" onBrowse={onBrowse} onOpenModule={vi.fn()} />)
+    renderWithEngine(<Header variant="hub" onBrowse={onBrowse} onOpenModule={vi.fn()} onResetCamera={vi.fn()} />)
     expect(screen.queryByRole('button', { name: /back to the workshop/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /reset camera/i })).not.toBeInTheDocument()
   })

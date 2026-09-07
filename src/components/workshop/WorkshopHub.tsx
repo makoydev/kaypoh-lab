@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, Gauge, MousePointerClick, Route } from 'lucide-react'
 import type { CatalogModule } from '../../types/simulation'
@@ -6,6 +7,13 @@ import { Badge } from '../ui/Badge'
 import { DrawingSheet } from './DrawingSheet'
 import { LearningPath } from './LearningPath'
 import { V8LivePreview } from './V8LivePreview'
+import { TurbofanLivePreview } from './TurbofanLivePreview'
+
+/** Live modules get the real running assembly on their sheet. */
+const LIVE_PREVIEWS: Record<string, () => ReactNode> = {
+  'v8-engine': () => <V8LivePreview />,
+  turbofan: () => <TurbofanLivePreview />,
+}
 
 const HOW_IT_WORKS = [
   { icon: Eye, title: 'Look inside', text: 'Every machine is built from scratch in 3D and cut open. Ghost the casing, go X-ray, or isolate one part.' },
@@ -14,8 +22,9 @@ const HOW_IT_WORKS = [
 ]
 
 export function WorkshopHub({ onOpen }: { onOpen: (m: CatalogModule) => void }) {
-  const [featured, ...rest] = MODULES
-  const liveCount = MODULES.filter((m) => m.status === 'active').length
+  const featured = MODULES.filter((m) => m.status === 'active')
+  const rest = MODULES.filter((m) => m.status !== 'active')
+  const liveCount = featured.length
 
   return (
     <main className="cad-backdrop relative min-h-full">
@@ -55,16 +64,20 @@ export function WorkshopHub({ onOpen }: { onOpen: (m: CatalogModule) => void }) 
           <div className="mb-5 flex items-end justify-between">
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-fog-300">Drawing sheets</h2>
-              <p className="mt-1 text-[13px] text-fog-500">One sheet per machine. The live one is really running — that is the actual engine, not a video.</p>
+              <p className="mt-1 text-[13px] text-fog-500">One sheet per machine. The live ones are really running — that is the actual machine, not a video.</p>
             </div>
             <Badge tone="muted" className="hidden sm:inline-flex">
               {MODULES.length} sheets
             </Badge>
           </div>
-          <DrawingSheet module={featured} onOpen={onOpen} featured index={0} preview={<V8LivePreview />} />
+          <div className="grid gap-5">
+            {featured.map((m, i) => (
+              <DrawingSheet key={m.id} module={m} onOpen={onOpen} featured index={i} preview={LIVE_PREVIEWS[m.id]?.()} />
+            ))}
+          </div>
           <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {rest.map((m, i) => (
-              <DrawingSheet key={m.id} module={m} onOpen={onOpen} index={i + 1} />
+              <DrawingSheet key={m.id} module={m} onOpen={onOpen} index={featured.length + i} />
             ))}
           </div>
         </section>

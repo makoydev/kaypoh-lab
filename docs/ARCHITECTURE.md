@@ -12,11 +12,14 @@ Tailwind CSS v4 · Framer Motion · Lucide icons · Vitest + Testing Library · 
 | Hash                 | View        | Component      |
 | -------------------- | ----------- | -------------- |
 | `#/` (or anything unknown) | Workshop    | `WorkshopHub`  |
-| `#/sim/v8-engine`    | Simulation  | `Simulation` in `App.tsx` |
+| `#/sim/v8-engine`    | Simulation  | `V8Simulation` in `App.tsx` |
+| `#/sim/turbofan`     | Simulation  | `TurbofanSimulation` in `App.tsx` |
 
-Only modules with `status: 'active'` are routable. `App.tsx` switches views inside `AnimatePresence
-mode="wait"` so two WebGL canvases never coexist. `EngineSimulationProvider` wraps both views, so engine
-state persists across navigation and the Workshop's live preview shows the real engine.
+Only modules with `status: 'active'` are routable (dev builds also accept drafts, so work in progress can
+be viewed before it is released). `App.tsx` switches views inside `AnimatePresence mode="wait"` so two
+WebGL canvases never coexist; both module providers wrap the whole shell, so each module's state persists
+across navigation and the Workshop's live previews show the real running assemblies. `SimulationLayout`
+owns the desktop-panels / mobile-sheets arrangement; each module supplies its canvas, panels and status bar.
 
 ## Data flow in the simulation
 
@@ -82,11 +85,35 @@ below `lg`. `ui/` holds the primitives (Button, Slider, SegmentedControl, Toggle
 Tooltip, Kbd). `controls/` are the simulation controls, `education/` the four-stroke explainer with an
 animated SVG `StrokeDiagram`.
 
+## Turbofan (`lib/turbofan*.ts`, `components/3d/turbofan`, `components/*/turbofan`)
+
+Same skeleton, second instance (decision 010):
+
+- **Model** `lib/turbofanModel.ts`: `computeTurbofan(n1, bpr)` runs a two-spool Brayton cycle — fan,
+  booster and HP compressor pressure ratios scale with speed², polytropic temperature ratios, a combustor
+  temperature rise scheduled with N1, and turbines that take back exactly the work their compressors spent
+  (the LP turbine pays for the fan's work on *all* the air, which is why higher bypass ratios cool the
+  exhaust). Outputs: station pressures/temperatures, per-stage in/out, mass-flow split, jet velocities,
+  static thrust split, fuel flow, TSFC, a 0-1 combustor glow. `advanceSpools` turns the two shafts.
+- **Config** `lib/turbofanConfig.ts`: flow-path lines (`HUB_LINE`, `CORE_CASING_LINE`), blade rows derived
+  from those lines, stations, stage extents, phase metadata. `lib/flowVis.ts` maps position → streak speed
+  and temperature → colour for the particles.
+- **Store** `hooks/useTurbofanSimulation.tsx`: `{ lpAngle, hpAngle, state, version }` driven by
+  `TurbofanDriver`; HUD reads `useTurbofanState()` (pure function of settings) so it works without a canvas.
+- **3D** `components/3d/turbofan`: casings are `LatheGeometry` shells revolved through 270° with
+  `ShapeGeometry` section caps (the museum-cutaway look); every blade row is one `InstancedMesh` of a blade
+  lofted from NACA-style airfoil sections (`bladeGeometry.ts`, maths in `lib/airfoil.ts`); flow is one
+  instanced streak mesh coloured by local temperature; the combustor glow is an additive flame ring, a point
+  light and a vertex-faded plume. Stage focus hides everything but one stage and shows `StageLabels`.
+- **HUD** `controls/turbofan`, `education/turbofan`, `layout/turbofan`: N1 throttle, bypass-ratio slider,
+  thrust split, station strip, view modes, part inspector, and the suck–squeeze–bang–blow explainer with an
+  animated `FlowSchematic`. Content lives in `lib/turbofanInfo.ts`.
+
 ## Workshop (`components/workshop`)
 
-`WorkshopHub` renders the hero, a featured `DrawingSheet` for the live module (with `V8LivePreview`), a
-grid of draft sheets with `ModuleSchematic` blueprints, `LearningPath`, and a how-it-works strip. All
-content comes from `lib/modules.ts`.
+`WorkshopHub` renders the hero, a featured `DrawingSheet` per live module (with `V8LivePreview` /
+`TurbofanLivePreview`), a grid of draft sheets with `ModuleSchematic` blueprints, `LearningPath`, and a
+how-it-works strip. All content comes from `lib/modules.ts`.
 
 ## Styling
 
