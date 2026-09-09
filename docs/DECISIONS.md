@@ -68,3 +68,21 @@ machinery — the museum-cutaway look. Every blade row is a single `InstancedMes
 blade scaled per row, and the whole airflow is one instanced streak mesh (~1,100 instances) coloured by local
 temperature. Consequence: ~40 draw calls for the whole engine and 60 fps on a laptop GPU; the wedge is fixed
 to the engine (+Y/+Z quadrant), so the default camera and stage-focus framings sit on that side.
+
+## 013 · Gearbox model: exact meshing from one rule, scripted shifts, car keeps rolling (2026-09-09)
+Every wheel's angle is a linear function of the input angle with a reference phase from one generic
+`meshedAngle` rule (a driver tooth at the line of centres meets a driven gap), so teeth interleave for all
+time and the reverse idler chain needs no hand-tuned phases. Pitch radii derive from tooth counts and a single
+centre distance, as real gearboxes vary module per pair. A gear change is a pure timeline (clutch out →
+disengage → synchronise/grind → engage → clutch in) stepped by `stepGearbox`, which is unit-tested without React.
+The engine rpm slider is the control; the car's speed persists through a shift and the clutch rewrites the
+engine rpm when it bites (the rev drop). Reverse is refused while rolling. Consequence: the synchro's job is
+visible as a real speed mismatch closing to zero, and the driver component is a two-line wrapper.
+
+## 014 · Gearbox 3D: half-sectioned case, per-wheel materials, torque path glow (2026-09-09)
+The case is cut along the centre plane with the near half removed (a body of revolution would be wrong for
+a gearbox), with orange cut strips when solid. Each wheel, hub and sleeve has its own material key so the
+torque path can light up per engaged gear through the same emissive channel as hover/selection
+(`applyGearboxGlow`, priority selection > hover > path); the hot blocker ring is a separate additive mesh
+because the six rings share one material. Gears are straight-cut extrusions so teeth are readable; the copy
+says real ones are helical. Consequence: ~32 materials and ~40 draw calls; fine on a laptop GPU.

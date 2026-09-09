@@ -61,3 +61,20 @@ depends on is fully tested one layer down.
 16. `F` hides the streaks; back arrow returns to the Workshop with both live previews turning and the
     turbofan state preserved.
 17. Narrow the window below 1024 px: dock appears, both sheets open, camera backs off.
+
+### Manual Transmission (`#/sim/manual-transmission`)
+
+18. Box running in 1st: input shaft and clutch disc at engine speed, countershaft turning the other way, every
+    speed gear meshing with its partner, output shaft slower. Torque path lit cyan from clutch disc to output.
+19. Shift 1 → 2 (`↑` or the gate): clutch disc backs off, 1-2 sleeve slides out, brass ring glows ember while
+    the slip number falls, sleeve slides onto the dogs, clutch closes, engine rpm drops. Fork follows the sleeve.
+20. Switch the synchro off (`S`) and shift: "Crunch!" phase, sleeve chattering, crunch counter increments.
+21. View modes `1` `2` `3`: cutaway (half case with orange cut strips only when solid, hidden/ghost/solid via
+    `C`), x-ray wireframe, synchro focus isolating one hub with gear/shaft rpm and status labels. Focus follows
+    the hub of the latest shift.
+22. Click the clutch, a speed gear, a sleeve, the idler, a fork, the solid case: correct chip lights. Ghost /
+    wireframe case never steals the click. Esc clears. `P` toggles the torque path.
+23. Reverse from rolling is refused with a note; from a standstill (N, wait) it engages and the output turns
+    backwards, speed shows as negative. Neutral: sleeves centred, output coasts down.
+24. Explainer tabs; "Show in 3D" on Synchro flies to the hub and performs a shift. Ratio table row click shifts.
+25. Back arrow: Workshop shows three live previews turning; gearbox state preserved. Below 1024 px both sheets open.

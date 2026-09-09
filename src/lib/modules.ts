@@ -63,10 +63,10 @@ export const MODULES: CatalogModule[] = [
     id: 'manual-transmission',
     code: 'HLD-004',
     name: 'Manual Transmission',
-    tagline: 'Synchros, dog teeth, and why you cannot skip to fifth.',
+    tagline: 'Synchros, dog teeth, and why you cannot just yank it into first.',
     description:
-      'Input shaft, counter shaft, output shaft. Gears are always meshed — the shifter only decides which pair is locked to the shaft.',
-    status: 'upcoming',
+      'Input shaft, countershaft, output shaft. Every gear is always meshed — the lever only decides which pair gets locked to the shaft, and a brass ring makes sure it happens at the right speed.',
+    status: 'active',
     category: 'Drivetrain',
     difficulty: 2,
     minutes: 12,
@@ -76,7 +76,6 @@ export const MODULES: CatalogModule[] = [
       'What a synchroniser ring is saving you from',
       'How a smaller gear driving a bigger one makes more torque',
     ],
-    progress: 10,
     accent: '#34d399',
   },
 ]

@@ -5,8 +5,8 @@
 **Live:** https://makoydev.github.io/kaypoh-lab/
 
 Interactive 3D simulations of mechanical systems, built to show how things work from the inside out.
-Live modules: a procedurally generated crossplane V8 engine with a full four-stroke cycle, and a two-spool
-high-bypass turbofan with a live thermodynamic cycle.
+Live modules: a procedurally generated crossplane V8 engine with a full four-stroke cycle, a two-spool
+high-bypass turbofan with a live thermodynamic cycle, and a five-speed manual gearbox with working synchros.
 
 ## Stack
 
@@ -35,7 +35,7 @@ npm run build          # production bundle in dist/
 - `docs/ADDING_A_MODULE.md` — playbook for a new simulation
 - `docs/TESTING.md` — test layers, conventions, visual QA checklist
 - `docs/DECISIONS.md` — decision log
-- `docs/plans/` — approved plans for upcoming modules (next: turbofan)
+- `docs/plans/` — approved plans per module (turbofan, manual transmission)
 
 ## The Workshop
 
@@ -44,6 +44,26 @@ engineering drawing sheet: frame ticks, a blueprint schematic (the live module s
 3D engine), what you'll learn, concept tags, and a title block with drawing number, difficulty, and time.
 "Open simulation" takes you to `#/sim/v8-engine`; the back arrow in the header returns to the Workshop.
 Engine state (rpm, crank angle, view mode) persists between the two.
+
+## What the Manual Transmission module does
+
+- **Model** — a five-speed + reverse, three-shaft, constant-mesh box in pure, tested maths. Ratios come from
+  tooth counts; pitch radii from one centre distance so every pair really touches; a single mesh-phase rule
+  keeps every tooth interleaved for all time (reverse idler included). Gear changes are a scripted timeline
+  (clutch out → sleeve out → synchronise → dog teeth lock → clutch in) stepped by `stepGearbox`; the car keeps
+  rolling while the synchro drags the input cluster to speed, and the clutch rewrites engine rpm when it
+  bites. Torque × ratio, speed ÷ ratio, power conserved. Reverse refused while rolling.
+- **Controls** — engine rpm, H-pattern lever with shift-phase readout and slip rpm, synchro on/off with a crunch
+  counter, torque/speed/km-h readout, ratio table (click to shift), part inspector, mesh–neutral–synchro–lock
+  explainer with an animated schematic and "Show in 3D".
+- **3D** — half-sectioned case and bell housing, clutch (flywheel, disc, pressure plate that back off), input
+  shaft, countershaft cluster, freewheeling speed gears with cones and dog teeth, three synchro hubs with
+  sliding sleeves and brass blocker rings that glow on contact, reverse idler, shift rail and forks. View
+  modes: cutaway, x-ray, synchro focus (one hub with live rpm labels). Torque path lights up cyan.
+- **Time scale** — 1:40 like the V8.
+
+Keyboard: `Space` play/pause · `↑` `↓` shift · `N` neutral · `←` `→` engine ∓/± 100 rpm (`Shift` for 500) ·
+`1` `2` `3` view modes · `C` casing · `P` torque path · `S` synchro · `R` reset camera · `Esc` clear selection.
 
 ## What the Turbofan module does
 
@@ -83,24 +103,31 @@ Keyboard: `Space` play/pause · `←` `→` step 1° (`Shift` for 10°) · `1` `
 ```
 src/
 ├── components/
-│   ├── layout/      Header, SidebarLeft, SidebarRight, StatusBar, Modal, MobileDock, ModuleSelector
+│   ├── layout/      Header, SidebarLeft, SidebarRight, StatusBar, Modal, MobileDock, ModuleSelector,
+│   │                turbofan/ and gearbox/ sidebars + status bars
 │   ├── canvas/      V8EngineCanvas, EngineScene, EngineAssembly, Lighting, CameraRig, SimulationDriver,
-│   │                TurbofanCanvas, TurbofanScene, TurbofanAssembly, TurbofanCameraRig, TurbofanDriver, useFlyTo
+│   │                TurbofanCanvas, TurbofanScene, TurbofanAssembly, TurbofanCameraRig, TurbofanDriver, useFlyTo,
+│   │                GearboxCanvas, GearboxScene, GearboxAssembly, GearboxCameraRig, GearboxDriver
 │   ├── 3d/          Crankshaft, Piston, ConnectingRod, EngineBlock, SparkPlug, Valves, SparkEffect,
 │   │                FocusLabels, materials (per-view-mode material sets), geometries (shared buffers)
-│   │   └── turbofan/  Casings, Spools, BladeRow, FlowParticles, CombustionGlow, StageLabels,
-│   │                  materials, geometries, bladeGeometry
+│   │   ├── turbofan/  Casings, Spools, BladeRow, FlowParticles, CombustionGlow, StageLabels,
+│   │   │              materials, geometries, bladeGeometry
+│   │   └── gearbox/   Gears, Synchros, Clutch, Casing, Forks, SynchroLabels, materials, geometries, gearGeometry
 │   ├── controls/    PlaybackControls, ThrottleSlider, StrokeStepper, FiringOrder, ViewModes, PartInspector
-│   │   └── turbofan/  N1Throttle, BypassRatioSlider, ThrustSplit, StationStrip, TurbofanViewModes, …
-│   ├── education/   HowLikeDatWork, StrokeDiagram · turbofan/ HowTurbofanWork, FlowSchematic
-│   ├── workshop/    WorkshopHub, DrawingSheet, ModuleSchematic, LearningPath, V8LivePreview, TurbofanLivePreview
+│   │   ├── turbofan/  N1Throttle, BypassRatioSlider, ThrustSplit, StationStrip, TurbofanViewModes, …
+│   │   └── gearbox/   EngineRpmSlider, GearSelector, TorqueReadout, RatioTable, GearboxViewModes, …
+│   ├── education/   HowLikeDatWork, StrokeDiagram · turbofan/ HowTurbofanWork, FlowSchematic ·
+│   │                gearbox/ HowGearboxWork, GearboxSchematic
+│   ├── workshop/    WorkshopHub, DrawingSheet, ModuleSchematic, LearningPath, V8LivePreview, TurbofanLivePreview,
+│   │                GearboxLivePreview
 │   └── ui/          Panel, Button, Slider, SegmentedControl, Toggle, Badge, MetricCard, Tooltip, Kbd
-├── hooks/           useEngineSimulation + useTurbofanSimulation (stores + providers), useKinematics,
-│                    usePartInteraction, useKeyboardShortcuts, useTurbofanKeyboardShortcuts, useFullscreen,
-│                    useMediaQuery, useHashRoute
+├── hooks/           useEngineSimulation + useTurbofanSimulation + useGearboxSimulation (stores + providers),
+│                    useKinematics, usePartInteraction, useKeyboardShortcuts, useTurbofanKeyboardShortcuts,
+│                    useGearboxKeyboardShortcuts, useFullscreen, useMediaQuery, useHashRoute
 ├── lib/             engineConfig, kinematics, partInfo, strokeInfo, modules,
-│                    turbofanConfig, turbofanModel, turbofanInfo, flowVis, airfoil
-├── types/           simulation.ts, turbofan.ts
+│                    turbofanConfig, turbofanModel, turbofanInfo, flowVis, airfoil,
+│                    gearboxConfig, gearboxModel, gearboxInfo
+├── types/           simulation.ts, turbofan.ts, gearbox.ts
 └── App.tsx
 ```
 

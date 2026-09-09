@@ -14,10 +14,11 @@ Tailwind CSS v4 · Framer Motion · Lucide icons · Vitest + Testing Library · 
 | `#/` (or anything unknown) | Workshop    | `WorkshopHub`  |
 | `#/sim/v8-engine`    | Simulation  | `V8Simulation` in `App.tsx` |
 | `#/sim/turbofan`     | Simulation  | `TurbofanSimulation` in `App.tsx` |
+| `#/sim/manual-transmission` | Simulation | `GearboxSimulation` in `App.tsx` |
 
 Only modules with `status: 'active'` are routable (dev builds also accept drafts, so work in progress can
 be viewed before it is released). `App.tsx` switches views inside `AnimatePresence mode="wait"` so two
-WebGL canvases never coexist; both module providers wrap the whole shell, so each module's state persists
+WebGL canvases never coexist; all module providers wrap the whole shell, so each module's state persists
 across navigation and the Workshop's live previews show the real running assemblies. `SimulationLayout`
 owns the desktop-panels / mobile-sheets arrangement; each module supplies its canvas, panels and status bar.
 

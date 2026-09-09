@@ -16,6 +16,7 @@ describe('ModuleSelector', () => {
     expect(screen.getByRole('listbox')).toBeInTheDocument()
     expect(screen.getAllByRole('option')).toHaveLength(4)
     expect(screen.getByRole('option', { name: /turbofan/i })).toHaveAttribute('aria-disabled', 'false')
+    expect(screen.getByRole('option', { name: /manual transmission/i })).toHaveAttribute('aria-disabled', 'false')
     expect(screen.getByRole('option', { name: /escapement/i })).toHaveAttribute('aria-disabled', 'true')
     await user.click(screen.getByRole('button', { name: /browse the workshop/i }))
     expect(onBrowse).toHaveBeenCalled()

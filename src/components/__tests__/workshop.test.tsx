@@ -45,7 +45,7 @@ describe('LearningPath', () => {
     render(<LearningPath modules={MODULES} onOpen={onOpen} />)
     const buttons = screen.getAllByRole('button')
     expect(buttons).toHaveLength(4)
-    expect(buttons.filter((b) => !(b as HTMLButtonElement).disabled)).toHaveLength(2)
+    expect(buttons.filter((b) => !(b as HTMLButtonElement).disabled)).toHaveLength(3)
     await user.click(buttons[0])
     expect(onOpen).toHaveBeenCalledWith(ACTIVE_MODULE)
   })
