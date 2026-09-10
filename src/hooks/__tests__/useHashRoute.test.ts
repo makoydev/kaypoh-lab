@@ -12,15 +12,16 @@ describe('parseRoute', () => {
     expect(parseRoute('#/sim/v8-engine')).toEqual({ name: 'sim', moduleId: 'v8-engine' })
     expect(parseRoute('#sim/v8-engine')).toEqual({ name: 'sim', moduleId: 'v8-engine' })
     expect(parseRoute('#/sim/turbofan')).toEqual({ name: 'sim', moduleId: 'turbofan' })
+    expect(parseRoute('#/sim/escapement')).toEqual({ name: 'sim', moduleId: 'escapement' })
   })
 
   it('refuses drafts and unknown modules', () => {
-    expect(parseRoute('#/sim/escapement')).toEqual({ name: 'hub' })
+    expect(parseRoute('#/sim/differential')).toEqual({ name: 'hub' })
     expect(parseRoute('#/sim/does-not-exist')).toEqual({ name: 'hub' })
   })
 
   it('lets dev builds open drafts, but never unknown modules', () => {
-    expect(parseRoute('#/sim/escapement', true)).toEqual({ name: 'sim', moduleId: 'escapement' })
+    expect(parseRoute('#/sim/differential', true)).toEqual({ name: 'sim', moduleId: 'differential' })
     expect(parseRoute('#/sim/does-not-exist', true)).toEqual({ name: 'hub' })
   })
 

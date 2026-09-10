@@ -179,5 +179,52 @@ export function applyHighlight<K extends string, P extends string>(
   }
 }
 
+export interface GlowInputs<K extends string, P extends string> {
+  selected: P | null
+  hovered: P | null
+  /** Materials carrying energy right now (a torque path, an impulse), lit in `pathColor`. */
+  path?: K[]
+  pathColor?: THREE.Color
+}
+
+const DEFAULT_PATH_COLOR = new THREE.Color('#22d3ee')
+
+/**
+ * Hover / selection (amber) and an optional energy path (cyan by default) share one emissive channel
+ * per material, so resolve them with a fixed priority (selection > hover > path) and ease the result.
+ * Generic over the module's material keys and part ids.
+ */
+export function applyGlow<K extends string, P extends string>(
+  materials: Record<K, THREE.Material>,
+  partMaterials: Record<P, K[]>,
+  { selected, hovered, path = [], pathColor = DEFAULT_PATH_COLOR }: GlowInputs<K, P>,
+  dt: number,
+) {
+  const k = 1 - Math.exp(-dt * 14)
+  for (const key of Object.keys(materials) as K[]) {
+    const mat = materials[key]
+    let target = 0
+    let color = HIGHLIGHT
+    if (selected && partMaterials[selected].includes(key)) target = 0.45
+    else if (hovered && partMaterials[hovered].includes(key)) target = 0.25
+    else if (path.includes(key)) {
+      target = 0.32
+      color = pathColor
+    }
+    const current = (mat.userData.highlight as number | undefined) ?? 0
+    const next = current + (target - current) * k
+    if (Math.abs(next - current) < 1e-4 && next === target && mat.userData.glowColor === color) continue
+    mat.userData.highlight = next
+    mat.userData.glowColor = color
+    if (mat instanceof THREE.MeshPhysicalMaterial || mat instanceof THREE.MeshStandardMaterial) {
+      mat.emissive.copy(color)
+      mat.emissiveIntensity = next
+    } else if (mat instanceof THREE.MeshBasicMaterial) {
+      const base = mat.userData.baseColor as THREE.Color
+      mat.color.copy(base).lerp(color, Math.min(1, next * 1.5))
+    }
+  }
+}
+
 /** Material factories shared with other modules' material sets. */
 export const materialFactories = { metal, ghost, wire }

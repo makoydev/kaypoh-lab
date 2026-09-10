@@ -3,9 +3,11 @@ import type { ThreeEvent } from '@react-three/fiber'
 import type { PartId } from '../types/simulation'
 import type { TurbofanPartId } from '../types/turbofan'
 import type { GearboxPartId } from '../types/gearbox'
+import type { EscapementPartId } from '../types/escapement'
 import { useEngine } from './useEngineSimulation'
 import { useTurbofan } from './useTurbofanSimulation'
 import { useGearbox } from './useGearboxSimulation'
+import { useEscapement } from './useEscapementSimulation'
 
 interface PartSelectionApi<P extends string> {
   selectPart: (part: P | null) => void
@@ -59,6 +61,13 @@ export function useTurbofanPartInteraction(part: TurbofanPartId) {
 /** Same, for the gearbox. */
 export function useGearboxPartInteraction(part: GearboxPartId) {
   const { selectPart, hoverPart, settingsRef } = useGearbox()
+  const current = useCallback(() => ({ selected: settingsRef.current.selectedPart, hovered: settingsRef.current.hoveredPart }), [settingsRef])
+  return usePartHandlers(part, { selectPart, hoverPart, current })
+}
+
+/** Same, for the escapement. */
+export function useEscapementPartInteraction(part: EscapementPartId) {
+  const { selectPart, hoverPart, settingsRef } = useEscapement()
   const current = useCallback(() => ({ selected: settingsRef.current.selectedPart, hovered: settingsRef.current.hoveredPart }), [settingsRef])
   return usePartHandlers(part, { selectPart, hoverPart, current })
 }

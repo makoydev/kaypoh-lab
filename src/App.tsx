@@ -4,14 +4,17 @@ import type { CatalogModule } from './types/simulation'
 import { EngineSimulationProvider, useEngine } from './hooks/useEngineSimulation'
 import { TurbofanSimulationProvider, useTurbofan } from './hooks/useTurbofanSimulation'
 import { GearboxSimulationProvider, useGearbox } from './hooks/useGearboxSimulation'
+import { EscapementSimulationProvider, useEscapement } from './hooks/useEscapementSimulation'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { TURBOFAN_SHORTCUTS, useTurbofanKeyboardShortcuts } from './hooks/useTurbofanKeyboardShortcuts'
 import { GEARBOX_SHORTCUTS, useGearboxKeyboardShortcuts } from './hooks/useGearboxKeyboardShortcuts'
+import { ESCAPEMENT_SHORTCUTS, useEscapementKeyboardShortcuts } from './hooks/useEscapementKeyboardShortcuts'
 import { useMediaQuery } from './hooks/useMediaQuery'
 import { useHashRoute } from './hooks/useHashRoute'
 import { V8EngineCanvas } from './components/canvas/V8EngineCanvas'
 import { TurbofanCanvas } from './components/canvas/TurbofanCanvas'
 import { GearboxCanvas } from './components/canvas/GearboxCanvas'
+import { EscapementCanvas } from './components/canvas/EscapementCanvas'
 import { Header, V8_SHORTCUTS } from './components/layout/Header'
 import { SidebarLeft } from './components/layout/SidebarLeft'
 import { SidebarRight } from './components/layout/SidebarRight'
@@ -20,6 +23,8 @@ import { TurbofanSidebarLeft, TurbofanSidebarRight } from './components/layout/t
 import { TurbofanStatusBar } from './components/layout/turbofan/TurbofanStatusBar'
 import { GearboxSidebarLeft, GearboxSidebarRight } from './components/layout/gearbox/GearboxSidebars'
 import { GearboxStatusBar } from './components/layout/gearbox/GearboxStatusBar'
+import { EscapementSidebarLeft, EscapementSidebarRight } from './components/layout/escapement/EscapementSidebars'
+import { EscapementStatusBar } from './components/layout/escapement/EscapementStatusBar'
 import { Modal } from './components/layout/Modal'
 import { MobileDock, type Sheet } from './components/layout/MobileDock'
 import { Panel } from './components/ui/Panel'
@@ -114,10 +119,26 @@ function GearboxSimulation() {
   )
 }
 
+function EscapementSimulation() {
+  const { settings, update } = useEscapement()
+  useEscapementKeyboardShortcuts()
+  return (
+    <SimulationLayout
+      canvas={<EscapementCanvas />}
+      left={<EscapementSidebarLeft />}
+      right={(open) => <EscapementSidebarRight explainerOpen={open} />}
+      statusBar={<EscapementStatusBar />}
+      playing={settings.playing}
+      onTogglePlay={() => update({ playing: !settings.playing })}
+    />
+  )
+}
+
 /** Which simulation, camera reset and shortcut list belong to a module id. */
 const SIMULATIONS: Record<string, { view: () => ReactNode; shortcuts: [string[], string][] }> = {
   turbofan: { view: () => <TurbofanSimulation />, shortcuts: TURBOFAN_SHORTCUTS },
   'manual-transmission': { view: () => <GearboxSimulation />, shortcuts: GEARBOX_SHORTCUTS },
+  escapement: { view: () => <EscapementSimulation />, shortcuts: ESCAPEMENT_SHORTCUTS },
 }
 
 function Shell() {
@@ -125,11 +146,17 @@ function Shell() {
   const engine = useEngine()
   const turbofan = useTurbofan()
   const gearbox = useGearbox()
+  const escapement = useEscapement()
   const openModule = useCallback((m: CatalogModule | string) => navigate({ name: 'sim', moduleId: typeof m === 'string' ? m : m.id }), [navigate])
   const browse = useCallback(() => navigate({ name: 'hub' }), [navigate])
   const moduleId = route.name === 'sim' ? route.moduleId : undefined
   const simulation = moduleId ? SIMULATIONS[moduleId] : undefined
-  const resetCamera = moduleId === 'turbofan' ? turbofan.resetCamera : moduleId === 'manual-transmission' ? gearbox.resetCamera : engine.resetCamera
+  const CAMERA_RESETS: Record<string, () => void> = {
+    turbofan: turbofan.resetCamera,
+    'manual-transmission': gearbox.resetCamera,
+    escapement: escapement.resetCamera,
+  }
+  const resetCamera = (moduleId && CAMERA_RESETS[moduleId]) || engine.resetCamera
 
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-ink-950 font-sans text-fog-100">
@@ -168,7 +195,9 @@ export default function App() {
     <EngineSimulationProvider>
       <TurbofanSimulationProvider>
         <GearboxSimulationProvider>
-          <Shell />
+          <EscapementSimulationProvider>
+            <Shell />
+          </EscapementSimulationProvider>
         </GearboxSimulationProvider>
       </TurbofanSimulationProvider>
     </EngineSimulationProvider>

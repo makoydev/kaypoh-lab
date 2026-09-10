@@ -86,3 +86,20 @@ torque path can light up per engaged gear through the same emissive channel as h
 (`applyGearboxGlow`, priority selection > hover > path); the hot blocker ring is a separate additive mesh
 because the six rings share one material. Gears are straight-cut extrusions so teeth are readable; the copy
 says real ones are helical. Consequence: ~32 materials and ~40 draw calls; fine on a laptop GPU.
+
+## 015 · Escapement: one oscillator phase drives everything, jewels are drawn from the contact path (2026-09-10)
+The balance is the clock: θ = A·sin(φ) with the frequency set by the beat rate and regulator only, so the rate cannot depend
+on amplitude (the lesson). The fork angle is the impulse pin's bearing clamped by the banking pins, and each beat is one
+lever travel split into unlock (draw recoil), a linear impulse, a free drop and a run to banking that draws the wheel into
+lock; even beats release the exit pallet, odd the entry. Rather than hand-shaping the pallet jewels and hoping they meet the
+teeth, `palletWorkingEdge` records where the tooth tip sits in the fork's frame across the action and the jewel outline is
+extruded from that curve, so contact is exact by construction and tested. Consequence: changing lock, impulse or drop
+angles in `ACTION` reshapes the jewels automatically; the club-tooth wheel is decorative beyond its tip radius and pitch.
+
+## 016 · Escapement scene lies flat, 1:8 time scale, synthesised tick (2026-09-10)
+The movement sits on a plate in the XZ plane like a watch on the bench, arbors vertical, so the existing floor/grid/shadow
+dressing works and a top-down "pallet focus" is natural. Angles are degrees counter-clockwise from above, which is Three's
+`rotation.y`, and the pure `polar`/`rot` helpers are tested against that convention. Time scale is 1:8 so 4 Hz reads as
+one tick a second. The optional tick is two short Web Audio oscillator bursts (click plus thud, entry and exit pitched
+differently); no samples, silently absent where the API is missing, off by default. Consequence: the hairspring ribbon is
+the one geometry rewritten per frame (preallocated, ~840 vertices); everything else only sets transforms.

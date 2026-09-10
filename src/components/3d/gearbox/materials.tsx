@@ -4,7 +4,7 @@ import type { CasingMode } from '../../../types/simulation'
 import type { GearId, GearboxPartId, GearboxViewMode, HubId } from '../../../types/gearbox'
 import { HUB_OF } from '../../../lib/gearboxConfig'
 import { useGearbox } from '../../../hooks/useGearboxSimulation'
-import { HIGHLIGHT_COLOR, materialFactories } from '../materials'
+import { applyGlow, materialFactories } from '../materials'
 
 const { metal, ghost, wire } = materialFactories
 
@@ -187,7 +187,7 @@ export function useGearboxMaterials() {
   return ctx
 }
 
-interface GlowInputs {
+interface GearboxGlowInputs {
   selected: GearboxPartId | null
   hovered: GearboxPartId | null
   /** Materials carrying torque right now (empty when the path overlay is off). */
@@ -195,33 +195,9 @@ interface GlowInputs {
 }
 
 /**
- * Hover / selection (amber) and the torque path (cyan) share one emissive channel per material, so
- * resolve them here with a fixed priority and ease the result. The hot blocker ring is a separate
- * additive mesh (`RingGlow`) because all six rings share one material.
+ * Hover / selection (amber) and the torque path (cyan) through the shared `applyGlow`. The hot
+ * blocker ring is a separate additive mesh (`RingGlow`) because all six rings share one material.
  */
-export function applyGearboxGlow(materials: GearboxMaterialSet, { selected, hovered, path }: GlowInputs, dt: number) {
-  const k = 1 - Math.exp(-dt * 14)
-  for (const key of Object.keys(materials) as GearboxMaterialKey[]) {
-    const mat = materials[key]
-    let target = 0
-    let color = HIGHLIGHT_COLOR
-    if (selected && GEARBOX_PART_MATERIALS[selected].includes(key)) target = 0.45
-    else if (hovered && GEARBOX_PART_MATERIALS[hovered].includes(key)) target = 0.25
-    else if (path.includes(key)) {
-      target = 0.32
-      color = PATH_COLOR
-    }
-    const current = (mat.userData.highlight as number | undefined) ?? 0
-    const next = current + (target - current) * k
-    if (Math.abs(next - current) < 1e-4 && next === target && mat.userData.glowColor === color) continue
-    mat.userData.highlight = next
-    mat.userData.glowColor = color
-    if (mat instanceof THREE.MeshPhysicalMaterial || mat instanceof THREE.MeshStandardMaterial) {
-      mat.emissive.copy(color)
-      mat.emissiveIntensity = next
-    } else if (mat instanceof THREE.MeshBasicMaterial) {
-      const base = mat.userData.baseColor as THREE.Color
-      mat.color.copy(base).lerp(color, Math.min(1, next * 1.5))
-    }
-  }
+export function applyGearboxGlow(materials: GearboxMaterialSet, inputs: GearboxGlowInputs, dt: number) {
+  applyGlow(materials, GEARBOX_PART_MATERIALS, { ...inputs, pathColor: PATH_COLOR }, dt)
 }

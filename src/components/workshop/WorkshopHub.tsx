@@ -9,12 +9,14 @@ import { LearningPath } from './LearningPath'
 import { V8LivePreview } from './V8LivePreview'
 import { TurbofanLivePreview } from './TurbofanLivePreview'
 import { GearboxLivePreview } from './GearboxLivePreview'
+import { EscapementLivePreview } from './EscapementLivePreview'
 
 /** Live modules get the real running assembly on their sheet. */
 const LIVE_PREVIEWS: Record<string, () => ReactNode> = {
   'v8-engine': () => <V8LivePreview />,
   turbofan: () => <TurbofanLivePreview />,
   'manual-transmission': () => <GearboxLivePreview />,
+  escapement: () => <EscapementLivePreview />,
 }
 
 const HOW_IT_WORKS = [

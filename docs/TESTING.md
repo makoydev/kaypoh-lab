@@ -78,3 +78,20 @@ depends on is fully tested one layer down.
     backwards, speed shows as negative. Neutral: sleeves centred, output coasts down.
 24. Explainer tabs; "Show in 3D" on Synchro flies to the hub and performs a shift. Ratio table row click shifts.
 25. Back arrow: Workshop shows three live previews turning; gearbox state preserved. Below 1024 px both sheets open.
+
+### Mechanical Watch Escapement (`#/sim/escapement`)
+
+26. Ticking: balance swinging ≈ 270° each way, hairspring coils breathing, fork flicking between the banking pins about
+    once a second, escape wheel indexing 12° per tick, a yellow flash on the landing jewel, tick counter climbing.
+27. View modes `1` `2` `3`: bench view (plate and cocks hidden/ghost/solid via `C`), x-ray wireframe, pallet focus looking
+    down on the jewels with entry/exit/wheel/fork labels that stay clear of the header and panels.
+28. Pallet focus at 0.1×: a tooth recoils on unlock, slides down the jewel, drops, and the next tooth lands on the other
+    jewel with the flash; labels say unlocking → impulse → drop → locked; "Now" in the status bar follows.
+29. Click the balance rim, the hairspring, the fork, a jewel, the escape wheel, a banking pin, the solid plate: correct chip
+    lights in the inspector. Ghost / wireframe plate never steals the click. Esc clears.
+30. Mainspring `←`/`→`: amplitude readout and the swing change, frequency and beat period do not. Beat rate 18,000 → 36,000:
+    ticks speed up, escape rpm changes. Regulator ±: the regulator arm walks along the outer coil, rate error shows s/day.
+31. Pause, then `,` `.` and "Next tick" step the balance; the seconds dial and watch time advance in 0.125 s steps.
+    Explainer tabs; "Show in 3D" on Impulse switches to pallet focus at 0.1×; "Follow" tracks the live phase.
+32. `S` turns the tick sound on (click + thud, alternating pitch). Back arrow: Workshop shows four live previews turning,
+    escapement state preserved. Below 1024 px both sheets open, camera backs off.

@@ -150,6 +150,43 @@ function V8({ accent }: { accent: string }) {
   )
 }
 
+function Differential({ accent }: { accent: string }) {
+  const bevel = (cx: number, cy: number, rx: number, ry: number, key: string) => <ellipse key={key} cx={cx} cy={cy} rx={rx} ry={ry} />
+  return (
+    <g fill="none" stroke={accent} strokeWidth={1.1}>
+      {/* half-shafts */}
+      <line x1={20} y1={100} x2={128} y2={100} />
+      <line x1={192} y1={100} x2={300} y2={100} />
+      {/* carrier */}
+      <rect x={126} y={60} width={68} height={80} rx={10} strokeDasharray="3 3" opacity={0.6} />
+      {/* ring gear (seen edge-on, tilted) */}
+      <ellipse cx={118} cy={100} rx={8} ry={46} />
+      <ellipse cx={118} cy={100} rx={5} ry={40} opacity={0.5} />
+      {/* pinion from the propshaft */}
+      <line x1={96} y1={160} x2={96} y2={152} />
+      <ellipse cx={96} cy={150} rx={12} ry={5} />
+      <line x1={96} y1={150} x2={96} y2={186} />
+      {/* side bevel gears */}
+      {bevel(138, 100, 6, 22, 'l')}
+      {bevel(182, 100, 6, 22, 'r')}
+      {/* spider gears top and bottom */}
+      {bevel(160, 76, 16, 5, 't')}
+      {bevel(160, 124, 16, 5, 'b')}
+      <line x1={160} y1={72} x2={160} y2={128} strokeDasharray="2 2" opacity={0.6} />
+      <text x={160} y={50} textAnchor="middle" fontSize={7} fill={accent} fontFamily={mono}>
+        SPIDER GEARS
+      </text>
+      <text x={20} y={92} fontSize={7} fill={accent} fontFamily={mono}>
+        LEFT WHEEL
+      </text>
+      <text x={300} y={92} textAnchor="end" fontSize={7} fill={accent} fontFamily={mono}>
+        RIGHT WHEEL
+      </text>
+      <Dim x1={20} x2={300} y={176} label="track" accent={accent} />
+    </g>
+  )
+}
+
 /** Blueprint-style line drawing for a module. */
 export function ModuleSchematic({ moduleId, accent, className }: SchematicProps) {
   return (
@@ -163,6 +200,7 @@ export function ModuleSchematic({ moduleId, accent, className }: SchematicProps)
       {moduleId === 'escapement' && <Escapement accent={accent} />}
       {moduleId === 'manual-transmission' && <Transmission accent={accent} />}
       {moduleId === 'v8-engine' && <V8 accent={accent} />}
+      {moduleId === 'differential' && <Differential accent={accent} />}
     </svg>
   )
 }

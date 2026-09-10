@@ -15,8 +15,8 @@ simulations that show how machines work from the inside out. Repo: `makoydev/kay
   Cyan `#22d3ee` is the CAD accent, ember `#fb923c` is combustion, amber is selection.
 
 Two views, hash-routed: the **Workshop** (`#/`, browsable catalog of modules as engineering drawing sheets)
-and a **Simulation** (`#/sim/<module-id>`). Live modules: the V8 engine (HLD-001), the turbofan (HLD-002) and
-the manual transmission (HLD-004).
+and a **Simulation** (`#/sim/<module-id>`). Live modules: the V8 engine (HLD-001), the turbofan (HLD-002), the
+escapement (HLD-003) and the manual transmission (HLD-004).
 
 ## Start here (every session)
 
@@ -36,17 +36,18 @@ These are the load-bearing rules. Follow them unless a decision entry says other
    reads pre-computed state and positions itself; it does not compute. New mechanisms get a `lib/*.ts`
    module with unit tests before they get meshes.
 3. **High-frequency state lives outside React.** Each module has a store (`useEngineSimulation.tsx`,
-   `useTurbofanSimulation.tsx`, `useGearboxSimulation.tsx`) mutated once per frame by its driver (negative `useFrame` priority so it runs
-   first). UI reads it through a snapshot hook that re-renders only when something moved. Settings (rpm/N1,
+   `useTurbofanSimulation.tsx`, `useGearboxSimulation.tsx`, `useEscapementSimulation.tsx`) mutated once per frame by its
+   driver (negative `useFrame` priority so it runs first). UI reads it through a snapshot hook that re-renders only when something moved. Settings (rpm/N1,
    view mode, selection) are ordinary React state. Never put per-frame values in React state. One store per
    module, same shape (decision 010); shared behaviour goes in generic helpers, not union types.
 4. **Config drives geometry.** Dimensions, firing order, and derived values (pin offsets, journal
-   positions, blade-row radii, flow-path lines, pitch radii) come from `lib/engineConfig.ts` /
-   `lib/turbofanConfig.ts` / `lib/gearboxConfig.ts`.
+   positions, blade-row radii, flow-path lines, pitch radii, pallet lock angles) come from `lib/engineConfig.ts` /
+   `lib/turbofanConfig.ts` / `lib/gearboxConfig.ts` / `lib/escapementConfig.ts`.
    Meshes and math read the same constants so they can't drift.
 5. **Shared materials and geometries.** Materials are built per view mode (`components/3d/materials.tsx`,
-   `components/3d/turbofan/materials.tsx`, `components/3d/gearbox/materials.tsx`); geometries are singletons in `geometries.ts` files. Highlighting
-   is done by mutating the shared material (`applyHighlight`), not by cloning per mesh. Repeated parts (blade
+   `components/3d/turbofan/materials.tsx`, `components/3d/gearbox/materials.tsx`, `components/3d/escapement/materials.tsx`);
+   geometries are singletons in `geometries.ts` files. Highlighting is done by mutating the shared material
+   (`applyHighlight`, or `applyGlow` when a module also lights an energy path), not by cloning per mesh. Repeated parts (blade
    rows, flow streaks) are one `InstancedMesh` each.
 6. **Content is data.** Module catalog, part explainers, stroke explainers live in `lib/*.ts` as typed
    objects and are validated by tests. Copy changes never require touching components.
@@ -115,20 +116,26 @@ order, keyboard shortcuts, mobile layout), Turbofan simulation (HLD-002: two-spo
 procedural 3D, instanced blade rows, temperature-coloured flow streaks, stage focus, N1 / bypass-ratio
 controls, station strip, explainer), Manual Transmission (HLD-004: five-speed + reverse constant-mesh box,
 exact tooth meshing, scripted synchro shifts with a switchable synchro and crunch counter, torque path glow,
-synchro-focus view, H-pattern lever, torque/speed readout, explainer), Workshop hub with drawing sheets and
+synchro-focus view, H-pattern lever, torque/speed readout, explainer), Escapement (HLD-003: Swiss lever with a pure
+oscillator model, jewels shaped from the tooth-tip path, breathing hairspring, regulator, beat-rate and mainspring
+controls, pallet focus, tick flash and optional synthesised tick, explainer), Workshop hub with drawing sheets and
 live previews, hash routing, tests + CI.
 
 **Deployed:** https://makoydev.github.io/kaypoh-lab/ via `.github/workflows/deploy.yml` on every push to
 `main` (build uses `VITE_BASE=/kaypoh-lab/`; keep hash routing so Pages needs no rewrites).
 
 **Next up, in rough priority:**
-1. Escapement (HLD-003): balance wheel + pallet fork + escape wheel; needs its own timing model.
-   Follow `docs/ADDING_A_MODULE.md`; the gearbox (`docs/plans/manual-transmission.md`) is the latest reference.
-2. Gearbox polish ideas: a clutch pedal you can hold, double-clutch / rev-match mini-lesson when the synchro
+1. Open differential (HLD-005, catalog entry is a 5 % draft): ring gear, spider gears, two half-shafts, speed averaging,
+   torque to the wheel with least grip. Follow `docs/ADDING_A_MODULE.md`; the escapement (`docs/plans/escapement.md`) is
+   the latest reference.
+2. Escapement polish ideas: a "watch stops" state when amplitude falls below the lift angle, a balance-focus view with the
+   hairspring breathing up close, a rate-vs-amplitude chart, tooth impulse faces on the club teeth, a fourth wheel and
+   seconds hand in 3D, mobile verification of the pallet-focus labels.
+3. Gearbox polish ideas: a clutch pedal you can hold, double-clutch / rev-match mini-lesson when the synchro
    is off, helical-tooth option, a 3D shift lever on the case, per-hub picker in synchro focus.
-3. Turbofan polish ideas: counter-rotating spool option, a "compare bypass ratios" side-by-side, blade-row
+4. Turbofan polish ideas: counter-rotating spool option, a "compare bypass ratios" side-by-side, blade-row
    velocity triangles in stage focus, bloom on the flame.
-4. Nice-to-haves: quiz mode per module, shareable state links, optional bloom post-processing,
+5. Nice-to-haves: quiz mode per module, shareable state links, optional bloom post-processing,
    a "compare two cylinders" view.
 
 **Open questions (owner's call):** whether the app should open on the Workshop or straight into the

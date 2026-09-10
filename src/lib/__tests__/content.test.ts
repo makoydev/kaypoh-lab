@@ -13,7 +13,7 @@ describe('module catalog', () => {
   })
 
   it('lists the live modules with the V8 first', () => {
-    expect(MODULES.filter((m) => m.status === 'active').map((m) => m.id)).toEqual(['v8-engine', 'turbofan', 'manual-transmission'])
+    expect(MODULES.filter((m) => m.status === 'active').map((m) => m.id)).toEqual(['v8-engine', 'turbofan', 'escapement', 'manual-transmission'])
     expect(ACTIVE_MODULE.id).toBe('v8-engine')
   })
 

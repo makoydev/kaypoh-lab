@@ -46,7 +46,7 @@ export const MODULES: CatalogModule[] = [
     tagline: 'How a tiny lever makes a spring tick instead of unwind.',
     description:
       'Balance wheel, pallet fork, escape wheel. The tick-tock is a spring being let go one tooth at a time, 28,800 times an hour.',
-    status: 'upcoming',
+    status: 'active',
     category: 'Horology',
     difficulty: 2,
     minutes: 10,
@@ -56,7 +56,6 @@ export const MODULES: CatalogModule[] = [
       'What the pallet fork does on every single tick',
       'Where the tick sound actually comes from',
     ],
-    progress: 20,
     accent: '#f59e0b',
   },
   {
@@ -77,6 +76,26 @@ export const MODULES: CatalogModule[] = [
       'How a smaller gear driving a bigger one makes more torque',
     ],
     accent: '#34d399',
+  },
+  {
+    id: 'differential',
+    code: 'HLD-005',
+    name: 'Open Differential',
+    tagline: 'One engine, two wheels, and a corner to get round.',
+    description:
+      'Ring gear, spider gears, two half-shafts. How a car sends power to both driven wheels yet lets the outside one turn faster in a bend, and why one wheel on ice spins uselessly.',
+    status: 'upcoming',
+    category: 'Drivetrain',
+    difficulty: 2,
+    minutes: 8,
+    concepts: ['Bevel gears', 'Speed averaging', 'Torque split', 'Limited slip'],
+    learn: [
+      'Why the two wheels always average to the ring gear speed',
+      'What the spider gears do in a straight line (nothing) and in a corner (everything)',
+      'Why an open diff sends its torque to the wheel with the least grip',
+    ],
+    progress: 5,
+    accent: '#f472b6',
   },
 ]
 

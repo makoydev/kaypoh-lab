@@ -3,6 +3,7 @@ import { render, type RenderOptions } from '@testing-library/react'
 import { EngineSimulationProvider } from '../hooks/useEngineSimulation'
 import { TurbofanSimulationProvider } from '../hooks/useTurbofanSimulation'
 import { GearboxSimulationProvider } from '../hooks/useGearboxSimulation'
+import { EscapementSimulationProvider } from '../hooks/useEscapementSimulation'
 
 /** Render inside the engine provider, the way every HUD component is mounted in the app. */
 export function renderWithEngine(ui: ReactElement, options?: RenderOptions) {
@@ -19,12 +20,19 @@ export function renderWithGearbox(ui: ReactElement, options?: RenderOptions) {
   return render(ui, { wrapper: GearboxSimulationProvider, ...options })
 }
 
+/** Render inside the escapement provider. */
+export function renderWithEscapement(ui: ReactElement, options?: RenderOptions) {
+  return render(ui, { wrapper: EscapementSimulationProvider, ...options })
+}
+
 /** All providers, the way `App` mounts them. */
 export function AllProviders({ children }: { children: ReactNode }) {
   return (
     <EngineSimulationProvider>
       <TurbofanSimulationProvider>
-        <GearboxSimulationProvider>{children}</GearboxSimulationProvider>
+        <GearboxSimulationProvider>
+          <EscapementSimulationProvider>{children}</EscapementSimulationProvider>
+        </GearboxSimulationProvider>
       </TurbofanSimulationProvider>
     </EngineSimulationProvider>
   )

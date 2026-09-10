@@ -6,7 +6,8 @@
 
 Interactive 3D simulations of mechanical systems, built to show how things work from the inside out.
 Live modules: a procedurally generated crossplane V8 engine with a full four-stroke cycle, a two-spool
-high-bypass turbofan with a live thermodynamic cycle, and a five-speed manual gearbox with working synchros.
+high-bypass turbofan with a live thermodynamic cycle, a mechanical watch escapement that keeps time one tooth at a
+time, and a five-speed manual gearbox with working synchros.
 
 ## Stack
 
@@ -35,7 +36,7 @@ npm run build          # production bundle in dist/
 - `docs/ADDING_A_MODULE.md` — playbook for a new simulation
 - `docs/TESTING.md` — test layers, conventions, visual QA checklist
 - `docs/DECISIONS.md` — decision log
-- `docs/plans/` — approved plans per module (turbofan, manual transmission)
+- `docs/plans/` — approved plans per module (turbofan, escapement, manual transmission)
 
 ## The Workshop
 
@@ -44,6 +45,26 @@ engineering drawing sheet: frame ticks, a blueprint schematic (the live module s
 3D engine), what you'll learn, concept tags, and a title block with drawing number, difficulty, and time.
 "Open simulation" takes you to `#/sim/v8-engine`; the back arrow in the header returns to the Workshop.
 Engine state (rpm, crank angle, view mode) persists between the two.
+
+## What the Escapement module does
+
+- **Model** — a straight-line Swiss lever escapement in pure, tested maths. The balance oscillator's phase is the master:
+  frequency comes from the beat rate (18,000–36,000 vph) and the regulator, amplitude from the mainspring wind, so the rate
+  never depends on amplitude. The fork follows the impulse pin and is clamped by the banking pins; each beat splits the
+  lever's 10° into unlock (the wheel recoils by the draw), a linear impulse, a free drop and a run to banking. Fifteen club
+  teeth, pallets embracing 2.5 of them, 12° per tick. The pallet jewels are shaped from the exact path the tooth tip takes,
+  so what you see touching is what the maths says touches.
+- **Controls** — mainspring wind (amplitude, power reserve), beat rate and regulator (s/day), a "this beat" readout with a
+  seconds dial, beat progress and a paused stepper (⅛ beat, next tick), the numbers table, part inspector, and a
+  swing–unlock–impulse–lock explainer with a live plan-view schematic and "Show in 3D".
+- **3D** — balance with breathing hairspring, regulator curb pins, safety roller and ruby impulse pin, pallet fork with guard
+  pin and two ruby jewels, banking pins, club-tooth escape wheel, plate and cocks with jewel bearings. View modes: bench,
+  x-ray, pallet focus (top-down with live labels). Tick flash on every landing, cyan energy path during the impulse, optional
+  synthesised tick.
+- **Time scale** — 1:8, so 28,800 vph looks like one tick a second.
+
+Keyboard: `Space` play/pause · `←` `→` mainspring ∓/± 5 % (`Shift` for 20 %) · `,` `.` step ⅛ beat when paused (`Shift` for a
+beat) · `1` `2` `3` view modes · `C` plate · `S` tick sound · `R` reset camera · `Esc` clear selection.
 
 ## What the Manual Transmission module does
 
@@ -104,30 +125,33 @@ Keyboard: `Space` play/pause · `←` `→` step 1° (`Shift` for 10°) · `1` `
 src/
 ├── components/
 │   ├── layout/      Header, SidebarLeft, SidebarRight, StatusBar, Modal, MobileDock, ModuleSelector,
-│   │                turbofan/ and gearbox/ sidebars + status bars
+│   │                turbofan/, gearbox/ and escapement/ sidebars + status bars
 │   ├── canvas/      V8EngineCanvas, EngineScene, EngineAssembly, Lighting, CameraRig, SimulationDriver,
 │   │                TurbofanCanvas, TurbofanScene, TurbofanAssembly, TurbofanCameraRig, TurbofanDriver, useFlyTo,
-│   │                GearboxCanvas, GearboxScene, GearboxAssembly, GearboxCameraRig, GearboxDriver
+│   │                GearboxCanvas, GearboxScene, GearboxAssembly, GearboxCameraRig, GearboxDriver,
+│   │                EscapementCanvas, EscapementScene, EscapementAssembly, EscapementCameraRig, EscapementDriver, tickSound
 │   ├── 3d/          Crankshaft, Piston, ConnectingRod, EngineBlock, SparkPlug, Valves, SparkEffect,
 │   │                FocusLabels, materials (per-view-mode material sets), geometries (shared buffers)
 │   │   ├── turbofan/  Casings, Spools, BladeRow, FlowParticles, CombustionGlow, StageLabels,
 │   │   │              materials, geometries, bladeGeometry
-│   │   └── gearbox/   Gears, Synchros, Clutch, Casing, Forks, SynchroLabels, materials, geometries, gearGeometry
+│   │   ├── gearbox/   Gears, Synchros, Clutch, Casing, Forks, SynchroLabels, materials, geometries, gearGeometry
+│   │   └── escapement/ Balance, Hairspring, PalletFork, EscapeWheel, Frame, TickFlash, PalletLabels, materials, geometries
 │   ├── controls/    PlaybackControls, ThrottleSlider, StrokeStepper, FiringOrder, ViewModes, PartInspector
 │   │   ├── turbofan/  N1Throttle, BypassRatioSlider, ThrustSplit, StationStrip, TurbofanViewModes, …
-│   │   └── gearbox/   EngineRpmSlider, GearSelector, TorqueReadout, RatioTable, GearboxViewModes, …
+│   │   ├── gearbox/   EngineRpmSlider, GearSelector, TorqueReadout, RatioTable, GearboxViewModes, …
+│   │   └── escapement/ MainspringSlider, RateControls, BeatReadout, NumbersTable, EscapementViewModes, …
 │   ├── education/   HowLikeDatWork, StrokeDiagram · turbofan/ HowTurbofanWork, FlowSchematic ·
-│   │                gearbox/ HowGearboxWork, GearboxSchematic
+│   │                gearbox/ HowGearboxWork, GearboxSchematic · escapement/ HowEscapementWork, EscapementSchematic
 │   ├── workshop/    WorkshopHub, DrawingSheet, ModuleSchematic, LearningPath, V8LivePreview, TurbofanLivePreview,
-│   │                GearboxLivePreview
+│   │                GearboxLivePreview, EscapementLivePreview
 │   └── ui/          Panel, Button, Slider, SegmentedControl, Toggle, Badge, MetricCard, Tooltip, Kbd
-├── hooks/           useEngineSimulation + useTurbofanSimulation + useGearboxSimulation (stores + providers),
+├── hooks/           useEngineSimulation + useTurbofanSimulation + useGearboxSimulation + useEscapementSimulation,
 │                    useKinematics, usePartInteraction, useKeyboardShortcuts, useTurbofanKeyboardShortcuts,
-│                    useGearboxKeyboardShortcuts, useFullscreen, useMediaQuery, useHashRoute
+│                    useGearboxKeyboardShortcuts, useEscapementKeyboardShortcuts, useFullscreen, useMediaQuery, useHashRoute
 ├── lib/             engineConfig, kinematics, partInfo, strokeInfo, modules,
 │                    turbofanConfig, turbofanModel, turbofanInfo, flowVis, airfoil,
-│                    gearboxConfig, gearboxModel, gearboxInfo
-├── types/           simulation.ts, turbofan.ts, gearbox.ts
+│                    gearboxConfig, gearboxModel, gearboxInfo, escapementConfig, escapementModel, escapementInfo
+├── types/           simulation.ts, turbofan.ts, gearbox.ts, escapement.ts
 └── App.tsx
 ```
 
