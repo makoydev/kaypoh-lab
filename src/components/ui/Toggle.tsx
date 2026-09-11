@@ -30,10 +30,12 @@ export function Toggle({ checked, onChange, label, description, disabled, classN
           checked ? 'border-accent/60 bg-accent/80' : 'border-white/10 bg-ink-600',
         )}
       >
+        {/* Anchored with left/top: without them the knob falls at its static position, which the
+            button's centred text alignment pushes into the middle of the track. */}
         <span
           className={cn(
-            'absolute top-0.5 size-3.5 rounded-full bg-white shadow transition-transform',
-            checked ? 'translate-x-[18px]' : 'translate-x-0.5',
+            'absolute left-0.5 top-0.5 size-3.5 rounded-full bg-white shadow transition-transform',
+            checked ? 'translate-x-4' : 'translate-x-0',
           )}
         />
       </button>
