@@ -22,6 +22,15 @@ export function routeToHash(route: Route) {
   return route.name === 'sim' ? `#/sim/${route.moduleId}` : '#/'
 }
 
+/** Site title, matching index.html. */
+export const SITE_TITLE = 'HowLikeDat — See how things actually jalan inside'
+
+/** Tab title for a route: module first, so open tabs and history entries stay tellable apart. */
+export function routeTitle(route: Route) {
+  const name = route.name === 'sim' ? moduleById(route.moduleId)?.name : undefined
+  return name ? `${name} — HowLikeDat` : SITE_TITLE
+}
+
 export function useHashRoute() {
   const [route, setRoute] = useState<Route>(() => parseRoute(window.location.hash, ALLOW_DRAFTS))
 
@@ -30,6 +39,10 @@ export function useHashRoute() {
     window.addEventListener('hashchange', onChange)
     return () => window.removeEventListener('hashchange', onChange)
   }, [])
+
+  useEffect(() => {
+    document.title = routeTitle(route)
+  }, [route])
 
   const navigate = useCallback((next: Route) => {
     const hash = routeToHash(next)

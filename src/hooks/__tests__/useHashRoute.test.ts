@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseRoute, routeToHash } from '../useHashRoute'
+import { parseRoute, routeTitle, routeToHash, SITE_TITLE } from '../useHashRoute'
 
 describe('parseRoute', () => {
   it('defaults to the hub', () => {
@@ -29,5 +29,17 @@ describe('parseRoute', () => {
     const sim = { name: 'sim', moduleId: 'v8-engine' } as const
     expect(parseRoute(routeToHash(sim))).toEqual(sim)
     expect(parseRoute(routeToHash({ name: 'hub' }))).toEqual({ name: 'hub' })
+  })
+})
+
+describe('routeTitle', () => {
+  it('names the module on a simulation route', () => {
+    expect(routeTitle({ name: 'sim', moduleId: 'v8-engine' })).toBe('V8 Engine — HowLikeDat')
+    expect(routeTitle({ name: 'sim', moduleId: 'escapement' })).toBe('Mechanical Watch Escapement — HowLikeDat')
+  })
+
+  it('falls back to the site title for the hub and for unknown modules', () => {
+    expect(routeTitle({ name: 'hub' })).toBe(SITE_TITLE)
+    expect(routeTitle({ name: 'sim', moduleId: 'does-not-exist' })).toBe(SITE_TITLE)
   })
 })
