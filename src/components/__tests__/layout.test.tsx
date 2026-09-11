@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { renderWithEngine } from '../../test/utils'
@@ -51,5 +51,22 @@ describe('StatusBar', () => {
     expect(screen.getByText('1,800')).toBeInTheDocument()
     expect(screen.getByText('000°')).toBeInTheDocument()
     expect(screen.getByText('#1')).toBeInTheDocument()
+  })
+})
+
+describe('Header shortcuts popover', () => {
+  it('opens on click and closes on Escape', async () => {
+    const user = userEvent.setup()
+    renderWithEngine(<Header variant="sim" onBrowse={vi.fn()} onOpenModule={vi.fn()} onResetCamera={vi.fn()} />)
+    const toggle = screen.getByRole('button', { name: /keyboard shortcuts/i })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+
+    await user.click(toggle)
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByText('Play / pause')).toBeInTheDocument()
+
+    await user.keyboard('{Escape}')
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    await waitFor(() => expect(screen.queryByText('Play / pause')).not.toBeInTheDocument())
   })
 })
