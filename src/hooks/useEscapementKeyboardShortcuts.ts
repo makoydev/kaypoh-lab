@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { ignoreShortcut } from './shortcutTarget'
 import { useEscapement } from './useEscapementSimulation'
 
 /**
@@ -10,8 +11,7 @@ export function useEscapementKeyboardShortcuts() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null
-      if (target && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(target.tagName)) return
+      if (ignoreShortcut(e)) return
       const s = settingsRef.current
       switch (e.key) {
         case ' ':

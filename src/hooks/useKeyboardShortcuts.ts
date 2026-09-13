@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { ignoreShortcut } from './shortcutTarget'
 import { useEngine } from './useEngineSimulation'
 
 /**
@@ -10,8 +11,7 @@ export function useKeyboardShortcuts() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null
-      if (target && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(target.tagName)) return
+      if (ignoreShortcut(e)) return
       const s = settingsRef.current
       switch (e.key) {
         case ' ':
