@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
 import type { PartId } from '../types/simulation'
 import type { TurbofanPartId } from '../types/turbofan'
@@ -40,6 +40,20 @@ function usePartHandlers<P extends string>(part: P, api: PartSelectionApi<P>) {
     document.body.style.cursor = 'auto'
     if (current().hovered === part) hoverPart(null)
   }, [part, hoverPart, current])
+
+  /**
+   * A mesh can vanish from under the pointer — switching view mode or cycling the casing unmounts
+   * parts — and R3F fires no pointer-out for a mesh that is no longer there. Without this the cursor
+   * stays a hand over the whole app and the part keeps its hover highlight in the HUD.
+   */
+  useEffect(
+    () => () => {
+      if (current().hovered !== part) return
+      document.body.style.cursor = 'auto'
+      hoverPart(null)
+    },
+    [part, hoverPart, current],
+  )
 
   return { onClick, onPointerOver, onPointerOut }
 }
