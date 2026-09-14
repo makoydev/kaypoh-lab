@@ -1,6 +1,7 @@
 import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { REGULATOR } from '../../lib/escapementConfig'
 import { renderWithEscapement } from '../../test/utils'
 import { EscapementPlayback } from '../controls/escapement/EscapementPlayback'
 import { MainspringSlider } from '../controls/escapement/MainspringSlider'
@@ -49,6 +50,15 @@ describe('RateControls', () => {
     fireEvent.change(reg, { target: { value: '120' } })
     expect(reg).toHaveValue('120')
     expect(screen.getByText(/noticeable by the weekend/i)).toBeInTheDocument()
+  })
+
+  it('can be regulated into the chronometer band', () => {
+    renderWithEscapement(<RateControls />)
+    const reg = screen.getByRole('slider', { name: /regulator/i })
+    // The step has to be fine enough to land inside −4 to +6, not skip from 0 straight past it.
+    fireEvent.change(reg, { target: { value: String(REGULATOR.step) } })
+    expect(reg).toHaveValue(String(REGULATOR.step))
+    expect(screen.getByText(/chronometer grade/i)).toBeInTheDocument()
   })
 })
 

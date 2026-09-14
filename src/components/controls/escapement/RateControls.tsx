@@ -9,7 +9,8 @@ const RATE_OPTIONS = BEAT_RATES.map((r) => ({ value: r, label: BEAT_RATE_META[r]
 function verdict(secondsPerDay: number) {
   const abs = Math.abs(secondsPerDay)
   if (abs === 0) return 'Dead on. Your watchmaker is pleased.'
-  if (abs <= 6) return 'Chronometer grade (−4 to +6 s/day).'
+  // COSC's band is lopsided: a watch may run six seconds fast but only four slow.
+  if (secondsPerDay >= -4 && secondsPerDay <= 6) return 'Chronometer grade (−4 to +6 s/day).'
   if (abs <= 30) return 'Fine for a mechanical watch.'
   if (abs <= 120) return 'Noticeable by the weekend.'
   return 'Set your meetings by something else.'

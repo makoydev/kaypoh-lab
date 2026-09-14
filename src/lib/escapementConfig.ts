@@ -183,7 +183,11 @@ export const amplitudeFor = (wind: number) => {
 export const REGULATOR = {
   /** Seconds per day, either way. */
   range: 240,
-  step: 10,
+  /**
+   * Fine enough to land inside the chronometer band (−4 to +6 s/day), which a step of 10 skipped
+   * straight over: every setting but dead-centre was already worse than chronometer grade.
+   */
+  step: 4,
 } as const
 
 /** Fractional rate error for a regulator setting in seconds per day. */

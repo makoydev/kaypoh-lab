@@ -39,8 +39,8 @@ describe('useEscapement', () => {
     expect(result.current.settings.wind).toBe(MAINSPRING.minWind)
     act(() => result.current.update({ regulator: 9999 }))
     expect(result.current.settings.regulator).toBe(REGULATOR.range)
-    act(() => result.current.update({ regulator: 14 }))
-    expect(result.current.settings.regulator).toBe(10)
+    act(() => result.current.update({ regulator: REGULATOR.step * 3 + 1 }))
+    expect(result.current.settings.regulator).toBe(REGULATOR.step * 3)
   })
 
   it('steps the balance by beats and notifies listeners', () => {
