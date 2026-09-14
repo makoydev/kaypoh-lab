@@ -36,6 +36,13 @@ describe('Header', () => {
     expect(screen.queryByRole('button', { name: /reset camera/i })).not.toBeInTheDocument()
   })
 
+  it('keeps the decorative tooltips out of the a11y tree', () => {
+    renderWithEngine(<Header variant="sim" onBrowse={vi.fn()} onOpenModule={vi.fn()} onResetCamera={vi.fn()} />)
+    // The icon buttons already say it in their aria-label; the hover bubble must not say it again.
+    expect(screen.queryAllByRole('tooltip')).toHaveLength(0)
+    expect(screen.getByRole('button', { name: 'Reset camera' })).toBeInTheDocument()
+  })
+
   it('goes back to the workshop from the back button', async () => {
     const user = userEvent.setup()
     const onBrowse = vi.fn()
