@@ -1,4 +1,4 @@
-import { useCallback, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { CatalogModule } from './types/simulation'
 import { EngineSimulationProvider, useEngine } from './hooks/useEngineSimulation'
@@ -45,6 +45,12 @@ function SimulationLayout({ canvas, left, right, statusBar, playing, onTogglePla
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [sheet, setSheet] = useState<Sheet | null>(null)
   const closeSheet = useCallback(() => setSheet(null), [])
+
+  // Crossing `lg` unmounts the bottom sheets but not their state, so a sheet left open before the
+  // window widened would spring back open the moment it narrowed again.
+  useEffect(() => {
+    if (isDesktop) setSheet(null)
+  }, [isDesktop])
 
   return (
     <div className="absolute inset-0">
