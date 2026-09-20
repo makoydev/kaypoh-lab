@@ -212,16 +212,19 @@ export function applyGlow<K extends string, P extends string>(
       color = pathColor
     }
     const current = (mat.userData.highlight as number | undefined) ?? 0
+    // A material going dark keeps the colour it lit up in. Adopting the new colour straight away
+    // made every impulse fade out amber — the selection colour — the instant the path moved on.
+    const glow = target > 0 ? color : ((mat.userData.glowColor as THREE.Color | undefined) ?? color)
     const next = current + (target - current) * k
-    if (Math.abs(next - current) < 1e-4 && next === target && mat.userData.glowColor === color) continue
+    if (Math.abs(next - current) < 1e-4 && next === target && mat.userData.glowColor === glow) continue
     mat.userData.highlight = next
-    mat.userData.glowColor = color
+    mat.userData.glowColor = glow
     if (mat instanceof THREE.MeshPhysicalMaterial || mat instanceof THREE.MeshStandardMaterial) {
-      mat.emissive.copy(color)
+      mat.emissive.copy(glow)
       mat.emissiveIntensity = next
     } else if (mat instanceof THREE.MeshBasicMaterial) {
       const base = mat.userData.baseColor as THREE.Color
-      mat.color.copy(base).lerp(color, Math.min(1, next * 1.5))
+      mat.color.copy(base).lerp(glow, Math.min(1, next * 1.5))
     }
   }
 }
