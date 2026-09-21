@@ -72,7 +72,10 @@ export function GearboxSimulationProvider({ children }: { children: ReactNode })
 
   const [sim] = useState(() => createGearboxStore())
   const [cameraToken, setCameraToken] = useState(0)
-  const [shiftNote, setShiftNote] = useState<string | null>(null)
+  // Wrapped in an object so repeating the same refusal is still a new note: two identical strings
+  // are the same state, so React would skip the re-render and the first note's timer would run on.
+  const [note, setNote] = useState<{ text: string } | null>(null)
+  const shiftNote = note?.text ?? null
 
   const update = useCallback<GearboxContextValue['update']>((patch) => {
     setSettings((prev) => {
@@ -84,10 +87,10 @@ export function GearboxSimulationProvider({ children }: { children: ReactNode })
   }, [])
 
   useEffect(() => {
-    if (!shiftNote) return
-    const id = window.setTimeout(() => setShiftNote(null), 2600)
+    if (!note) return
+    const id = window.setTimeout(() => setNote(null), 2600)
     return () => window.clearTimeout(id)
-  }, [shiftNote])
+  }, [note])
 
   const selectPart = useCallback((part: GearboxPartId | null) => update({ selectedPart: part }), [update])
   const hoverPart = useCallback((part: GearboxPartId | null) => update({ hoveredPart: part }), [update])
@@ -96,7 +99,7 @@ export function GearboxSimulationProvider({ children }: { children: ReactNode })
     (gear: GearId) => {
       const verdict = canSelect(gear, sim.engaged, sim.outputRpm)
       if (!verdict.ok) {
-        setShiftNote(verdict.reason ?? null)
+        setNote(verdict.reason ? { text: verdict.reason } : null)
         return false
       }
       update({ gear })

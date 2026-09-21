@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { GearboxSimulationProvider, createGearboxStore, useGearbox } from '../useGearboxSimulation'
 import { ENGINE, ratioOf } from '../../lib/gearboxConfig'
 
@@ -76,5 +76,36 @@ describe('useGearbox', () => {
     const before = result.current.cameraToken
     act(() => result.current.resetCamera())
     expect(result.current.cameraToken).toBe(before + 1)
+  })
+})
+
+describe('the shift note', () => {
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => vi.useRealTimers())
+
+  it('clears itself after a moment', () => {
+    const { result } = renderHook(() => useGearbox(), { wrapper })
+    act(() => {
+      result.current.selectGear('R')
+    })
+    expect(result.current.shiftNote).toMatch(/stop/i)
+    act(() => void vi.advanceTimersByTime(2600))
+    expect(result.current.shiftNote).toBeNull()
+  })
+
+  it('stays up for the full moment when the same refusal repeats', () => {
+    const { result } = renderHook(() => useGearbox(), { wrapper })
+    act(() => {
+      result.current.selectGear('R')
+    })
+    act(() => void vi.advanceTimersByTime(2500))
+    // Trying the same thing again earns a fresh window, not the tail of the first one.
+    act(() => {
+      result.current.selectGear('R')
+    })
+    act(() => void vi.advanceTimersByTime(2500))
+    expect(result.current.shiftNote).toMatch(/stop/i)
+    act(() => void vi.advanceTimersByTime(100))
+    expect(result.current.shiftNote).toBeNull()
   })
 })
