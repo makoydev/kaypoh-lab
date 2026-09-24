@@ -60,8 +60,11 @@ export function SparkEffect({ index }: { index: number }) {
   )
 }
 
-/** A single point light that hops to whichever cylinder is burning brightest. */
-export function CombustionLight() {
+/**
+ * A single point light that hops to whichever cylinder is burning brightest. With `only` set (piston
+ * focus) it follows just that cylinder, so the lone piston is not lit by seven fires you cannot see.
+ */
+export function CombustionLight({ only }: { only?: number }) {
   const ref = useRef<THREE.PointLight>(null)
   const { sim } = useEngine()
   const chambers = useMemo(() => CYLINDERS.map((c) => chamberPosition(c, 0.25)), [])
@@ -71,6 +74,7 @@ export function CombustionLight() {
     let best = -1
     let bestFlash = 0
     for (let i = 0; i < sim.cylinders.length; i++) {
+      if (only !== undefined && i !== only) continue
       const f = sim.cylinders[i].flash
       if (f > bestFlash) {
         bestFlash = f

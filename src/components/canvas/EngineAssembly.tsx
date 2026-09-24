@@ -37,7 +37,7 @@ export function EngineAssembly({ labels = true }: { labels?: boolean }) {
           </Fragment>
         ) : null,
       )}
-      <CombustionLight />
+      <CombustionLight only={pistonMode ? focusIdx : undefined} />
       {labels && pistonMode && <FocusLabels index={focusIdx} />}
     </EngineMaterialsProvider>
   )
