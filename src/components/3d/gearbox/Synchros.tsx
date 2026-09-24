@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { HubId } from '../../../types/gearbox'
@@ -51,6 +51,14 @@ export function RingGlow() {
     [],
   )
   const geometry = useMemo(() => new THREE.TorusGeometry(GB.ring.outerRadius, 0.045, 10, 48).rotateY(Math.PI / 2), [])
+  // R3F disposes the mesh on unmount, not the material or geometry it was handed.
+  useEffect(
+    () => () => {
+      material.dispose()
+      geometry.dispose()
+    },
+    [material, geometry],
+  )
   useFrame(() => {
     const mesh = ref.current
     if (!mesh) return

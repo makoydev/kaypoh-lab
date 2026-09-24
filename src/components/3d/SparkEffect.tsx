@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { CYLINDERS } from '../../lib/engineConfig'
@@ -37,6 +37,14 @@ export function SparkEffect({ index }: { index: number }) {
         toneMapped: false,
       }),
     [],
+  )
+  // R3F disposes the mesh on unmount, not the material or geometry it was handed.
+  useEffect(
+    () => () => {
+      coreMat.dispose()
+      haloMat.dispose()
+    },
+    [coreMat, haloMat],
   )
 
   useFrame(() => {

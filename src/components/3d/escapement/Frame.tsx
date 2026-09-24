@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { ESC } from '../../../lib/escapementConfig'
 import { useEscapement } from '../../../hooks/useEscapementSimulation'
 import { useEscapementPartInteraction } from '../../../hooks/usePartInteraction'
@@ -33,6 +33,8 @@ export function Frame() {
       bridgeGeometry(ESC.escapeWheel.x - 0.3, -edge + 0.05, ESC.escapeWheel.x, 0, escapeCockY),
     ]
   }, [])
+  // R3F disposes the mesh on unmount, not the material or geometry it was handed.
+  useEffect(() => () => bridges.forEach((g) => g.dispose()), [bridges])
 
   const jewels: [number, number, number][] = [
     [ESC.balance.x, ESC.bridges.balanceCockY, 0],

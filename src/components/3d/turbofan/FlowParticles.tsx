@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { TurbofanState } from '../../../types/turbofan'
@@ -65,6 +65,8 @@ export function FlowParticles() {
       }),
     [],
   )
+  // R3F disposes the mesh on unmount, not the material or geometry it was handed.
+  useEffect(() => () => material.dispose(), [material])
 
   useLayoutEffect(() => {
     const mesh = ref.current

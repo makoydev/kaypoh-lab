@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { TF } from '../../../lib/turbofanConfig'
@@ -30,6 +30,14 @@ export function CombustionGlow() {
   const plumeMat = useMemo(
     () => new THREE.MeshBasicMaterial({ color: '#fb923c', vertexColors: true, transparent: true, opacity: 0.08, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, fog: false, side: THREE.DoubleSide }),
     [],
+  )
+  // R3F disposes the mesh on unmount, not the material or geometry it was handed.
+  useEffect(
+    () => () => {
+      flameMat.dispose()
+      plumeMat.dispose()
+    },
+    [flameMat, plumeMat],
   )
 
   useFrame(({ clock }) => {

@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { BANKED_FORK_ANGLE, ESC } from '../../../lib/escapementConfig'
@@ -20,6 +20,14 @@ export function TickFlash() {
     [],
   )
   const geometry = useMemo(() => new THREE.RingGeometry(0.05, 0.11, 32).rotateX(-Math.PI / 2), [])
+  // R3F disposes the mesh on unmount, not the material or geometry it was handed.
+  useEffect(
+    () => () => {
+      material.dispose()
+      geometry.dispose()
+    },
+    [material, geometry],
+  )
 
   useFrame(() => {
     const mesh = ref.current
