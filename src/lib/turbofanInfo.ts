@@ -38,7 +38,7 @@ export const TURBOFAN_PART_INFO: Record<TurbofanPartId, TurbofanPartInfo> = {
     id: 'hpCompressor',
     name: 'HP Compressor',
     tagline: 'Eight squeezes, each one smaller than the last.',
-    role: 'Packs the core air into a space roughly 30× smaller than when it came in, heating it to around 600 °C before any fuel is added.',
+    role: 'Finishes squeezing the core air to around 30× the pressure it came in at, into roughly a tenth of the space, heating it to around 600 °C before any fuel is added.',
     details: [
       'Eight stages on the fast HP shaft (around 11,000 rpm). Each rotor adds a little speed; the stator behind it turns that speed into pressure.',
       'The blades shrink stage by stage because the same air now takes up much less room.',
@@ -141,7 +141,7 @@ export const PHASE_INFO: Record<FlowPhase, PhaseInfo> = {
     step: 2,
     title: 'Compression',
     nick: 'Squeeze',
-    headline: 'Rows of blades pack the core air into a space around 30× smaller.',
+    headline: 'Rows of blades squeeze the core air to about 30× the pressure, into a tenth of the space.',
     body: 'Each rotor row flings the air faster; the stator row behind it slows the air down and turns that speed into pressure. Do that eleven times and the air is dense, hot (about 600 °C) and very keen to burn. The blades shrink as you go back because the same air now takes up much less room. Nothing moves in and out — it is all one steady stream.',
     bullets: ['Booster: 3 stages, fan shaft', 'HP compressor: 8 stages, fast shaft', 'Overall pressure ratio: ~30× at takeoff', 'Exit temperature: ~600 °C'],
     stages: ['booster', 'hpCompressor'],

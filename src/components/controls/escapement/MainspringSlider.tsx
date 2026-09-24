@@ -1,5 +1,5 @@
 import { MAINSPRING, amplitudeFor } from '../../../lib/escapementConfig'
-import { powerReserveHours } from '../../../lib/escapementModel'
+import { LIFT_ANGLE, powerReserveHours } from '../../../lib/escapementModel'
 import { useEscapement, useEscapementSnapshot } from '../../../hooks/useEscapementSimulation'
 import { Slider } from '../../ui/Slider'
 
@@ -47,7 +47,7 @@ export function MainspringSlider() {
         ]}
       />
       <p className="mt-1.5 text-[11px] leading-snug text-fog-700">
-        Less torque means a smaller swing ({MAINSPRING.minAmplitude}–{MAINSPRING.maxAmplitude}°, heading for {Math.round(target)}°), but the hairspring pulls back in proportion, so each swing takes the same time. Below about {Math.round(MAINSPRING.minAmplitude / 2.5)}° the pin could not unlock the fork and a real watch would stop.
+        Less torque means a smaller swing ({MAINSPRING.minAmplitude}–{MAINSPRING.maxAmplitude}°, heading for {Math.round(target)}°), but the hairspring pulls back in proportion, so each swing takes the same time. Below about {Math.round(LIFT_ANGLE / 2)}° the pin could not carry the fork all the way across and a real watch would stop.
       </p>
     </div>
   )

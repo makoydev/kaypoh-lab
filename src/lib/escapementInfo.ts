@@ -50,9 +50,9 @@ export const ESCAPEMENT_PART_INFO: Record<EscapementPartId, EscapementPartInfo> 
     id: 'roller',
     name: 'Roller & impulse pin',
     tagline: 'The one place the balance touches anything.',
-    role: 'A small disc on the balance staff carrying a D-shaped ruby pin. For most of every swing the pin is nowhere near the fork. For about 50° in the middle it enters the fork’s notch, flicks the lever across, and picks up a tiny kick in return.',
+    role: 'A small disc on the balance staff carrying a D-shaped ruby pin. For most of every swing the pin is nowhere near the fork. For about 55° in the middle it enters the fork’s notch, flicks the lever across, and picks up a tiny kick in return.',
     details: [
-      'The pin only meets the fork over the lift angle, roughly 50° out of a 300° swing. The rest is free swing.',
+      'The pin only meets the fork over the lift angle, roughly 55° around the centre of a swing that reaches about 300° either side. The rest is free swing.',
       'It is the pin that unlocks the escape wheel each time, using the momentum of the balance.',
       'The disc has a crescent cut for the guard pin, so the fork cannot flip across when the pin is away.',
     ],
@@ -142,7 +142,7 @@ export const ESCAPEMENT_STEP_INFO: Record<EscapementStep, EscapementStepInfo> = 
     nick: 'Swing',
     headline: 'For most of every beat the balance is on its own, and that is the point.',
     body: 'The hairspring pulls the balance back toward centre with a push proportional to how far it has twisted. A bigger swing means a harder pull, so a big swing and a small swing take the same time: this is what makes it a clock. The impulse pin is far from the fork, the fork rests on its banking pin, and the escape wheel is locked dead by one pallet jewel. Nothing in the gear train can move. The mainspring waits.',
-    bullets: ['Rate set by balance inertia and spring stiffness', 'Amplitude does not change the rate', 'Fork banked, wheel locked', 'Roughly 250° of every 300° swing'],
+    bullets: ['Rate set by balance inertia and spring stiffness', 'Amplitude does not change the rate', 'Fork banked, wheel locked', 'Free for all but ~55° of each swing'],
     action: { viewMode: 'cutaway' },
   },
   unlock: {
@@ -162,7 +162,7 @@ export const ESCAPEMENT_STEP_INFO: Record<EscapementStep, EscapementStepInfo> = 
     nick: 'Impulse',
     headline: 'The tooth slides down the jewel’s slope and gives the balance its kick.',
     body: 'Once the locking corner clears, the tooth tip rides down the inclined impulse face. The mainspring, through the wheel, now pushes the fork, and the fork pushes the impulse pin. The balance gets back the energy it lost to friction and air in the last swing, and a little extra to cover the unlock. This happens right around the centre of the swing, where the balance is moving fastest, so it disturbs the timing least.',
-    bullets: ['Wheel turns ≈ 10.5° down the slope', 'Lever moves 6.5°, pin pushed ≈ 40°', 'Energy: mainspring → wheel → fork → balance', 'Centred on the dead point for best timekeeping'],
+    bullets: ['Wheel turns ≈ 10.5° down the slope', 'Lever moves 6.5°, pin pushed ≈ 35°', 'Energy: mainspring → wheel → fork → balance', 'Centred on the dead point for best timekeeping'],
     action: { viewMode: 'pallet', speed: 0.1 },
   },
   lock: {

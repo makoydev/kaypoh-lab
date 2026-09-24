@@ -40,7 +40,7 @@ export const GEARBOX_PART_INFO: Record<GearboxPartId, GearboxPartInfo> = {
     tagline: 'One long lump of gears, spinning backwards.',
     role: 'A single shaft below the main axis with a gear for every speed fixed to it. Driven by the input gear, it turns opposite to the engine and drives every speed gear on the output shaft at once.',
     details: [
-      'All its gears are locked to it — no freewheeling here. Its speed is always engine speed ÷ 1.52.',
+      'All its gears are locked to it — no freewheeling here. Its speed is always input-shaft speed ÷ 1.52, which is engine speed whenever the clutch is in.',
       'Each of its gears is a different size, and each partner on the output shaft is sized to match: that pairing is the ratio.',
       'Also called the layshaft or cluster gear. On many boxes it is machined from one piece of steel.',
     ],
@@ -92,7 +92,7 @@ export const GEARBOX_PART_INFO: Record<GearboxPartId, GearboxPartInfo> = {
       'An interlock plate blocks the other rails while one is out of neutral; two gears at once would lock the box solid.',
       'The fork’s shoes are the only part of the shift mechanism that touches the spinning sleeve, so they wear first.',
     ],
-    kaypohFact: 'The H pattern is not a design choice, it is the rails: three rods side by side, each pushed forward or back. Dog-leg first-gear patterns just swap which rail is nearest the driver.',
+    kaypohFact: 'The H pattern is not a design choice, it is the rails: three rods side by side, each pushed forward or back. Dog-leg boxes pair the gears differently on the rails, putting 1st out on its own so that 2nd to 3rd is one straight pull.',
   },
   outputShaft: {
     id: 'outputShaft',
@@ -104,7 +104,7 @@ export const GEARBOX_PART_INFO: Record<GearboxPartId, GearboxPartInfo> = {
       'Coaxial with the input shaft: its nose spins inside the input gear on a small pilot bearing.',
       'The final drive after it multiplies torque another 3.9×, so 1st gear is ×12 at the wheels.',
     ],
-    kaypohFact: 'The output turns slower than the engine in every gear except 5th, and the wheels turn slower still. The whole point of a gearbox is to trade engine speed for wheel torque.',
+    kaypohFact: 'The output turns slower than the engine in 1st to 3rd, matches it in 4th and beats it in 5th, and the final drive makes the wheels slower still. The whole point of a gearbox is to trade engine speed for wheel torque.',
   },
   casing: {
     id: 'casing',
@@ -171,7 +171,7 @@ export const STEP_INFO: Record<GearboxStep, StepInfo> = {
     title: 'Lock & drive',
     nick: 'Lock',
     headline: 'Sleeve over the dog teeth: that gear is now part of the shaft, and the maths is fixed.',
-    body: 'Power runs engine → input gear → countershaft → the locked pair → sleeve → hub → output shaft. A small gear driving a big one turns it slower but with more force: 1st gear here divides speed by 3.16 and multiplies torque by 3.16. Power in equals power out (minus a little friction), it is only traded between speed and force. 4th locks the shafts straight together, 5th runs the other way and is an overdrive.',
+    body: 'Power runs engine → input gear → countershaft → the locked pair → sleeve → hub → output shaft. A small gear driving a big one turns it slower but with more force: 1st gear here divides speed by 3.16 and multiplies torque by 3.16. Power in equals power out (minus a little friction), it is only traded between speed and force. 4th locks the shafts straight together, and 5th flips the sizes round (small gear driven) for an overdrive.',
     bullets: ['1st: speed ÷ 3.16, torque × 3.16', '4th: direct drive, 1 : 1', '5th: overdrive, × 0.84', 'Power in = power out'],
     action: { viewMode: 'cutaway', torquePath: true },
   },
