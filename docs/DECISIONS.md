@@ -103,3 +103,11 @@ dressing works and a top-down "pallet focus" is natural. Angles are degrees coun
 one tick a second. The optional tick is two short Web Audio oscillator bursts (click plus thud, entry and exit pitched
 differently); no samples, silently absent where the API is missing, off by default. Consequence: the hairspring ribbon is
 the one geometry rewritten per frame (preallocated, ~840 vertices); everything else only sets transforms.
+
+## 017 · Focused controls claim only the keys they use (2026-09-24)
+Module shortcuts listen on `window`, and every hook goes through `ignoreShortcut`. It used to drop every key while any
+button or input had focus, and since a clicked button keeps focus, one click on the HUD silenced the keyboard. Now a
+button claims Space/Enter, a range slider its arrows, a text field everything; held keys repeat only for the stepping
+keys; and a key another handler already `preventDefault`ed (a popover or sheet closing on Esc) is left alone.
+Consequence: a new module's shortcut hook gets all of this for free by calling `ignoreShortcut`, and anything that
+consumes a key itself should `preventDefault` it.
