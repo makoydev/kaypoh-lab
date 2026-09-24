@@ -239,7 +239,3 @@ export const BEAT_RATE_META: Record<BeatRate, { label: string; note: string }> =
   28800: { label: '28,800', note: '4 Hz. The standard “hi-beat” of most mechanical watches today.' },
   36000: { label: '36,000', note: '5 Hz. True hi-beat: steadier against knocks, thirstier for oil.' },
 }
-
-/** Lateral span of the whole model, plate edge to plate edge. */
-export const ESCAPEMENT_X_MIN = ESC.plate.xStart
-export const ESCAPEMENT_X_MAX = ESC.plate.xEnd

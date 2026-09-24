@@ -144,8 +144,6 @@ export function useEngineMaterials() {
   return ctx
 }
 
-export const HIGHLIGHT_COLOR = HIGHLIGHT
-
 /**
  * Smoothly pushes hover / selection highlight into the relevant shared materials. Generic over the
  * module's material keys and part ids so every module shares one implementation.

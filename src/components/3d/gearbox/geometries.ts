@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import { GB, GEARS, IDLER_CENTRE } from '../../../lib/gearboxConfig'
+import { GB, GEARS } from '../../../lib/gearboxConfig'
 import { gearGeometry } from './gearGeometry'
 
 function once<T>(factory: () => T) {
@@ -370,5 +370,3 @@ export const forkGeometry = once(() => {
   boss.dispose()
   return merged
 })
-
-export const idlerCentre = IDLER_CENTRE

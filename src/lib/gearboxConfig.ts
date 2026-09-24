@@ -179,9 +179,6 @@ export const GEARS: Record<string, GearSpec> = {
   outputR: { id: 'outputR', teeth: TEETH.pairs.R.output, radius: (REVERSE_MODULE * TEETH.pairs.R.output) / 2, module: REVERSE_MODULE, x: gearX('R'), centre: MAIN_CENTRE, shaft: 'output', bore: mainBore },
 }
 
-/** Gear spec of the freewheeling wheel for a speed (4th uses the input gear). */
-export const outputGearOf = (gear: SpeedGearId): GearSpec => (gear === '4' ? GEARS.input : GEARS[`output${gear}`])
-
 /** Meshing pairs, driver first. The reverse chain is two pairs through the idler. */
 export const MESHES: { driver: string; driven: string }[] = [
   { driver: 'input', driven: 'counterDrive' },
@@ -259,7 +256,3 @@ export const HUB_META: Record<HubId, { label: string; gears: [SpeedGearId, Speed
   '12': { label: '1-2 hub', gears: ['2', '1'] },
   '5R': { label: '5-R hub', gears: ['5', 'R'] },
 }
-
-/** Axial span of the whole model, flywheel face to case rear. */
-export const GEARBOX_X_MIN = GB.bell.xStart
-export const GEARBOX_X_MAX = GB.case.xEnd

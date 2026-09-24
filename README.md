@@ -146,7 +146,7 @@ src/
 │   │                GearboxLivePreview, EscapementLivePreview
 │   └── ui/          Panel, Button, Slider, SegmentedControl, Toggle, Badge, MetricCard, Tooltip, Kbd
 ├── hooks/           useEngineSimulation + useTurbofanSimulation + useGearboxSimulation + useEscapementSimulation,
-│                    useKinematics, usePartInteraction, useKeyboardShortcuts, useTurbofanKeyboardShortcuts,
+│                    usePartInteraction, useKeyboardShortcuts, useTurbofanKeyboardShortcuts,
 │                    useGearboxKeyboardShortcuts, useEscapementKeyboardShortcuts, useFullscreen, useMediaQuery, useHashRoute
 ├── lib/             engineConfig, kinematics, partInfo, strokeInfo, modules,
 │                    turbofanConfig, turbofanModel, turbofanInfo, flowVis, airfoil,

@@ -368,4 +368,3 @@ export const rowsForStage = (stage: StageId) => BLADE_ROWS.filter((r) => r.stage
 /** Overall axial span of the model, spinner apex to exhaust cone tip. */
 export const ENGINE_X_MIN = TF.fan.x - TF.spinner.length
 export const ENGINE_X_MAX = TF.exhaustCone.xEnd
-export const ENGINE_LENGTH = ENGINE_X_MAX - ENGINE_X_MIN

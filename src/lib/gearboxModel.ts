@@ -103,9 +103,6 @@ export function lockedWheelAngle(gear: SpeedGearId, inputAngle: number) {
   return gear === '4' ? inputAngle : gearAngles(inputAngle).freewheel[gear]
 }
 
-/** Signed turns of the locked wheel per input turn. */
-export const wheelTurnsPerInputTurn = (gear: SpeedGearId) => (gear === '4' ? 1 : TRAIN.freewheel[gear].k)
-
 /** Which wheel of the mesh table is which, for the mesh test and the meshes. */
 export function wheelAngle(id: string, angles: GearboxAngles): number {
   switch (id) {

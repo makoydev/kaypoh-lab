@@ -2,7 +2,6 @@ import type { Bank, CylinderSpec, CylinderState, Stroke, Vec3 } from '../types/s
 import { CYLINDERS, DEG_PER_FIRE, FIRING_ORDER, GEOMETRY, PIN_OFFSETS_DEG, bankAngleDeg, cylinderZ } from './engineConfig'
 
 export const DEG2RAD = Math.PI / 180
-export const RAD2DEG = 180 / Math.PI
 
 export const mod = (a: number, n: number) => ((a % n) + n) % n
 

@@ -55,7 +55,6 @@ export const normalize = (a: P2): P2 => {
 
 export const BALANCE_CENTRE: P2 = { x: ESC.balance.x, z: 0 }
 export const WHEEL_CENTRE: P2 = { x: ESC.escapeWheel.x, z: 0 }
-export const FORK_PIVOT: P2 = { x: 0, z: 0 }
 
 /* ---------------------------------- Balance → fork ---------------------------------- */
 
@@ -239,19 +238,8 @@ export function bankingPinPositions(): Record<Pallet, P2> {
 
 /* ---------------------------------- Timekeeping ---------------------------------- */
 
-export const PHASE_LABEL: Record<EscapementPhase, string> = {
-  free: 'Free swing',
-  unlock: 'Unlocking',
-  impulse: 'Impulse',
-  drop: 'Drop',
-  lock: 'Locked',
-}
-
 /** Hours of running left at a given wind, for the readout. */
 export const powerReserveHours = (wind: number, reserveHours: number) => (reserveHours * clamp(wind, 0, 100)) / 100
-
-/** Seconds gained (+) or lost (−) per day for a regulator setting. Identity, but named for the readouts. */
-export const dailyRate = (regulator: number) => regulator
 
 /** Degrees the seconds hand has turned for an escape wheel angle, clockwise from 12. */
 export const secondsAngleFor = (escapeAngle: number, rate: BeatRate) => (escapeAngle - ESCAPE_ANGLE_0) / secondsRatio(rate)
