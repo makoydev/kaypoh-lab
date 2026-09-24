@@ -63,7 +63,7 @@ export function TorqueReadout() {
       <div className="flex items-center justify-between rounded-md border border-white/[0.06] bg-ink-900/50 px-2 py-1.5 text-[11px]">
         <span className="text-fog-500">Road speed</span>
         <span className="font-mono text-fog-100">
-          {r.speedKmh < 0 ? '−' : ''}
+          {r.speedKmh < -1 ? '−' : ''}
           {Math.round(Math.abs(r.speedKmh))} <span className="text-fog-500">km/h</span>
           {r.speedKmh < -1 ? <span className="ml-1 text-fog-500">(backwards)</span> : null}
         </span>

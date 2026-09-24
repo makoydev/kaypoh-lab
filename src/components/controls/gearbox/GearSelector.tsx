@@ -114,18 +114,16 @@ export function GearSelector() {
         )}
       </AnimatePresence>
 
-      <div className="flex items-center justify-between gap-2">
-        <Toggle
-          checked={settings.synchro}
-          onChange={(v) => update({ synchro: v })}
-          label={
-            <span className="flex items-center gap-1.5">
-              Synchroniser rings <Kbd>S</Kbd>
-            </span>
-          }
-          description={settings.synchro ? 'Speeds are matched before the teeth meet.' : 'No matching. Listen for the crunch.'}
-        />
-      </div>
+      <Toggle
+        checked={settings.synchro}
+        onChange={(v) => update({ synchro: v })}
+        label={
+          <span className="flex items-center gap-1.5">
+            Synchroniser rings <Kbd>S</Kbd>
+          </span>
+        }
+        description={settings.synchro ? 'Speeds are matched before the teeth meet.' : 'No matching. Listen for the crunch.'}
+      />
       {snap.crunches > 0 && (
         <p className="text-[11px] text-fog-500">
           Crunches so far: <span className="font-mono text-red-300">{snap.crunches}</span>. Each one is a chipped dog tooth. Your mechanic sends regards.

@@ -25,13 +25,12 @@ function pistonY(stroke: Stroke, p: number) {
   return BORE_TOP + 8 + (down ? eased : 1 - eased) * TRAVEL
 }
 
-function Valve({ x, open, color, flip }: { x: number; open: number; color: string; flip?: boolean }) {
+function Valve({ x, open, color }: { x: number; open: number; color: string }) {
   const lift = open * 10
   return (
     <motion.g animate={{ y: lift }} transition={{ type: 'spring', stiffness: 120, damping: 18 }}>
       <line x1={x} y1={BORE_TOP - 34} x2={x} y2={BORE_TOP - 2} stroke={color} strokeWidth={3} strokeLinecap="round" />
       <path d={`M ${x - 12} ${BORE_TOP - 3} L ${x + 12} ${BORE_TOP - 3} L ${x + 8} ${BORE_TOP + 4} L ${x - 8} ${BORE_TOP + 4} Z`} fill={color} />
-      {flip && null}
     </motion.g>
   )
 }

@@ -26,7 +26,7 @@ function Field({ label, value, mono = true, className }: { label: string; value:
 
 function Difficulty({ level, accent }: { level: 1 | 2 | 3; accent: string }) {
   return (
-    <span className="flex items-end gap-0.5" aria-label={`Difficulty ${level} of 3`}>
+    <span role="img" className="flex items-end gap-0.5" aria-label={`Difficulty ${level} of 3`}>
       {[1, 2, 3].map((i) => (
         <span key={i} className="w-1.5 rounded-sm" style={{ height: 4 + i * 3, backgroundColor: i <= level ? accent : 'rgba(255,255,255,0.12)' }} />
       ))}

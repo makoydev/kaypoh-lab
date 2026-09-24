@@ -63,7 +63,6 @@ export function GearboxSchematic({ step, engaged, sleeves, className }: GearboxS
         const [top, bottom] = SIZE[g]
         const stroke = pairStroke(g)
         const lit = stroke !== DIM
-        const partner = g === '4' ? null : x
         return (
           <g key={g}>
             <rect x={x - 5} y={MAIN_Y - top} width={10} height={top * 2} rx={1.5} fill={lit ? `${stroke}22` : 'transparent'} stroke={stroke} strokeWidth={lit ? 1.6 : 1.1} />
@@ -72,8 +71,6 @@ export function GearboxSchematic({ step, engaged, sleeves, className }: GearboxS
                 <rect x={x - 5} y={COUNTER_Y - bottom} width={10} height={bottom * 2} rx={1.5} fill={lit ? `${stroke}22` : 'transparent'} stroke={stroke} strokeWidth={lit ? 1.6 : 1.1} />
                 <circle cx={x + 14} cy={(MAIN_Y + top + COUNTER_Y - bottom) / 2 + 4} r={9} fill="none" stroke={stroke} strokeWidth={lit ? 1.6 : 1.1} />
               </>
-            ) : partner !== null ? (
-              <rect x={x - 5} y={COUNTER_Y - bottom} width={10} height={bottom * 2} rx={1.5} fill={lit ? `${stroke}22` : 'transparent'} stroke={stroke} strokeWidth={lit ? 1.6 : 1.1} />
             ) : (
               <rect x={x - 5} y={COUNTER_Y - bottom} width={10} height={bottom * 2} rx={1.5} fill={lit ? `${stroke}22` : 'transparent'} stroke={stroke} strokeWidth={lit ? 1.6 : 1.1} />
             )}

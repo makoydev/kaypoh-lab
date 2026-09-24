@@ -1,7 +1,8 @@
 import type { EscapementPhase, EscapementStep, Pallet } from '../../../types/escapement'
 import { ACTION, BANKED_FORK_ANGLE, ESC, STEP_META } from '../../../lib/escapementConfig'
-import { BALANCE_CENTRE, WHEEL_CENTRE, add, impulsePin, palletStoneOutline, polar, rot, toothTipAngles } from '../../../lib/escapementModel'
-import { BANKING_PINS } from '../../3d/escapement/geometries'
+import { BALANCE_CENTRE, WHEEL_CENTRE, add, bankingPinPositions, impulsePin, palletStoneOutline, polar, rot, toothTipAngles } from '../../../lib/escapementModel'
+
+const BANKING_PINS = bankingPinPositions()
 
 interface EscapementSchematicProps {
   step: EscapementStep
