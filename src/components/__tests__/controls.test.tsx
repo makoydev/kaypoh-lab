@@ -50,9 +50,10 @@ describe('StrokeStepper', () => {
   it('steps the crank by 1° and 10° when paused', async () => {
     const user = userEvent.setup()
     renderWithEngine(<StrokeStepper />)
+    expect(screen.getByRole('button', { name: 'Step forward 1°' })).toBeDisabled()
     await user.click(screen.getByRole('button', { name: /pause to step/i }))
-    await user.click(screen.getByTitle('+1° (→)'))
-    await user.click(screen.getByTitle('+10° (Shift+→)'))
+    await user.click(screen.getByRole('button', { name: 'Step forward 1°' }))
+    await user.click(screen.getByRole('button', { name: 'Step forward 10°' }))
     expect(screen.getByRole('slider', { name: /crank angle/i })).toHaveValue('11')
   })
 })

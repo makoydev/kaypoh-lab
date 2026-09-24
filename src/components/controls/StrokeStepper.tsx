@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { STROKE_META, STROKE_ORDER, cylinderByNumber } from '../../lib/engineConfig'
 import { STROKE_PHASE_START, mod } from '../../lib/kinematics'
 import { useEngine, useSimSnapshot } from '../../hooks/useEngineSimulation'
-import { cn } from '../../lib/utils'
 import { Button } from '../ui/Button'
 import { Slider } from '../ui/Slider'
 import { Kbd } from '../ui/Kbd'
@@ -87,17 +86,17 @@ export function StrokeStepper() {
         ]}
       />
 
-      <div className={cn('mt-1 grid grid-cols-4 gap-1.5', playing && 'pointer-events-none opacity-40')}>
-        <Button size="sm" onClick={() => stepAngle(-10)} title="−10° (Shift+←)">
+      <div className="mt-1 grid grid-cols-4 gap-1.5">
+        <Button size="sm" disabled={playing} onClick={() => stepAngle(-10)} title="−10° (Shift+←)" aria-label="Step back 10°">
           <ChevronsLeft className="size-3.5" /> 10°
         </Button>
-        <Button size="sm" onClick={() => stepAngle(-1)} title="−1° (←)">
+        <Button size="sm" disabled={playing} onClick={() => stepAngle(-1)} title="−1° (←)" aria-label="Step back 1°">
           <ChevronLeft className="size-3.5" /> 1°
         </Button>
-        <Button size="sm" onClick={() => stepAngle(1)} title="+1° (→)">
+        <Button size="sm" disabled={playing} onClick={() => stepAngle(1)} title="+1° (→)" aria-label="Step forward 1°">
           1° <ChevronRight className="size-3.5" />
         </Button>
-        <Button size="sm" onClick={() => stepAngle(10)} title="+10° (Shift+→)">
+        <Button size="sm" disabled={playing} onClick={() => stepAngle(10)} title="+10° (Shift+→)" aria-label="Step forward 10°">
           10° <ChevronsRight className="size-3.5" />
         </Button>
       </div>

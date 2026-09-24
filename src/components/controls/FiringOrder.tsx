@@ -2,6 +2,42 @@ import { CYLINDERS, DEG_PER_FIRE, FIRING_ORDER, STROKE_META, STROKE_ORDER } from
 import { mod } from '../../lib/kinematics'
 import { useEngine, useSimSnapshot } from '../../hooks/useEngineSimulation'
 import { cn } from '../../lib/utils'
+import type { CylinderState } from '../../types/simulation'
+
+interface CellProps {
+  n: number
+  state: CylinderState | undefined
+  firing: boolean
+  isFocus: boolean
+  onFocus: (n: number) => void
+}
+
+/**
+ * One cylinder in the bank layout. Lives at module scope: declared inside `FiringOrder` it was a new
+ * component type on every 30 fps snapshot, so React remounted all eight buttons and a click on a
+ * running engine landed on a button that no longer existed by mouseup.
+ */
+function Cell({ n, state, firing, isFocus, onFocus }: CellProps) {
+  const meta = state ? STROKE_META[state.stroke] : null
+  return (
+    <button
+      type="button"
+      onClick={() => onFocus(n)}
+      title={`Cylinder ${n} — click to focus`}
+      className={cn(
+        'relative flex h-9 flex-col items-center justify-center rounded-md border text-center transition-colors',
+        isFocus ? 'border-accent/70' : 'border-white/[0.07] hover:border-white/20',
+      )}
+      style={{ backgroundColor: meta ? `${meta.color}${firing ? '55' : '22'}` : undefined }}
+    >
+      <span className="font-mono text-xs font-semibold leading-none text-fog-100">{n}</span>
+      <span className="mt-0.5 text-[9px] uppercase tracking-wider leading-none" style={{ color: meta?.color }}>
+        {meta?.nick}
+      </span>
+      {firing && <span className="absolute -right-1 -top-1 size-2 rounded-full bg-ember shadow-[0_0_10px_2px_rgba(251,146,60,0.8)]" />}
+    </button>
+  )
+}
 
 export function FiringOrder() {
   const snap = useSimSnapshot(30)
@@ -12,31 +48,10 @@ export function FiringOrder() {
 
   const left = CYLINDERS.filter((c) => c.bank === 'left')
   const right = CYLINDERS.filter((c) => c.bank === 'right')
-
-  const Cell = ({ n }: { n: number }) => {
-    const st = snap.cylinders[n - 1]
-    const meta = st ? STROKE_META[st.stroke] : null
-    const firing = n === active
-    const isFocus = n === focusCylinder
-    return (
-      <button
-        type="button"
-        onClick={() => update({ focusCylinder: n })}
-        title={`Cylinder ${n} — click to focus`}
-        className={cn(
-          'relative flex h-9 flex-col items-center justify-center rounded-md border text-center transition-colors',
-          isFocus ? 'border-accent/70' : 'border-white/[0.07] hover:border-white/20',
-        )}
-        style={{ backgroundColor: meta ? `${meta.color}${firing ? '55' : '22'}` : undefined }}
-      >
-        <span className="font-mono text-xs font-semibold leading-none text-fog-100">{n}</span>
-        <span className="mt-0.5 text-[9px] uppercase tracking-wider leading-none" style={{ color: meta?.color }}>
-          {meta?.nick}
-        </span>
-        {firing && <span className="absolute -right-1 -top-1 size-2 rounded-full bg-ember shadow-[0_0_10px_2px_rgba(251,146,60,0.8)]" />}
-      </button>
-    )
-  }
+  const focus = (n: number) => update({ focusCylinder: n })
+  const cell = (n: number) => (
+    <Cell key={n} n={n} state={snap.cylinders[n - 1]} firing={n === active} isFocus={n === focusCylinder} onFocus={focus} />
+  )
 
   return (
     <div className="space-y-3">
@@ -85,17 +100,13 @@ export function FiringOrder() {
         </div>
         <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
           <div className="grid gap-1">
-            {left.map((c) => (
-              <Cell key={c.number} n={c.number} />
-            ))}
+            {left.map((c) => cell(c.number))}
           </div>
           <div className="flex flex-col items-center justify-center text-[9px] uppercase tracking-[0.2em] text-fog-700">
             <span className="rotate-90 whitespace-nowrap">crank</span>
           </div>
           <div className="grid gap-1">
-            {right.map((c) => (
-              <Cell key={c.number} n={c.number} />
-            ))}
+            {right.map((c) => cell(c.number))}
           </div>
         </div>
       </div>
