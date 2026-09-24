@@ -7,9 +7,9 @@ import { playTick } from './tickSound'
 /**
  * Steps the escapement once per frame (oscillator phase, amplitude, every derived angle, the tick
  * counter), plays the tick when asked, and eases the hover / selection / impulse glow. Runs before
- * any mesh reads the store.
+ * any mesh reads the store. `sound={false}` keeps the Workshop preview quiet even when the tick is on.
  */
-export function EscapementDriver() {
+export function EscapementDriver({ sound = true }: { sound?: boolean }) {
   const { sim, settingsRef } = useEscapement()
   const materials = useEscapementMaterials()
 
@@ -20,7 +20,7 @@ export function EscapementDriver() {
     // Only bump the version: snapshot hooks poll it at their own fps. Listeners are for discrete
     // jumps (a paused step), and notifying them here re-rendered the HUD at the display rate.
     if (s.playing) sim.version++
-    if (events.tick && s.sound) playTick(events.tick)
+    if (events.tick && sound && s.sound) playTick(events.tick)
     applyEscapementGlow(materials, { selected: s.selectedPart, hovered: s.hoveredPart, path: energyPathKeys(sim.escPhase, sim.pallet) }, step)
   }, -10)
 

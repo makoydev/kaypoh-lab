@@ -27,7 +27,9 @@ export function V8LivePreview() {
       dpr={[1, 1.5]}
       camera={{ position: [7.2, 3.6, 8.4], fov: 32, near: 0.1, far: 60 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-      style={{ background: 'transparent' }}
+      // Look, don't touch: the preview shares the module's store, so a stray hover or click here
+      // would highlight parts and leave one selected for when the simulation opens.
+      style={{ background: 'transparent', pointerEvents: 'none' }}
     >
       <Suspense fallback={null}>
         <StudioEnvironment resolution={128} />

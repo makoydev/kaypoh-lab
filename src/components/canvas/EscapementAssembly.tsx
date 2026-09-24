@@ -14,12 +14,12 @@ import { EscapementDriver } from './EscapementDriver'
  * roller and hairspring, pallet fork, escape wheel, tick flash. Shared by the simulation scene and
  * the Workshop preview.
  */
-export function EscapementAssembly({ labels = true }: { labels?: boolean }) {
+export function EscapementAssembly({ labels = true, sound = true }: { labels?: boolean; sound?: boolean }) {
   const { settings } = useEscapement()
   const focus = settings.viewMode === 'pallet'
   return (
     <EscapementMaterialsProvider>
-      <EscapementDriver />
+      <EscapementDriver sound={sound} />
       <Frame />
       <Balance />
       <Hairspring />
