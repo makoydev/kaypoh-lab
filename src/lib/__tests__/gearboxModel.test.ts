@@ -105,6 +105,22 @@ describe('shift timeline', () => {
     expect(engage.ringContact).toBe(0)
   })
 
+  it('never teleports a sleeve across a phase boundary, synchro or not', () => {
+    for (const synchro of [true, false]) {
+      for (const [from, to] of [['N', '1'], ['1', '2'], ['3', '4'], ['5', '4']] as [GearId, GearId][]) {
+        let acc = 0
+        for (const { duration } of shiftPhases(from, to, synchro)) {
+          acc += duration
+          const before = shiftFrame(from, to, acc - 1e-6, synchro)
+          const after = shiftFrame(from, to, acc + 1e-6, synchro)
+          for (const hub of ['34', '12', '5R'] as const) {
+            expect(Math.abs(after.sleeves[hub] - before.sleeves[hub]), `${from}→${to} ${synchro ? 'synchro' : 'crunch'} ${hub} at ${before.phase}`).toBeLessThan(1e-3)
+          }
+        }
+      }
+    }
+  })
+
   it('never touches the other hubs', () => {
     for (let t = 0; t < 2; t += 0.05) {
       const f = shiftFrame('2', '5', t, true)

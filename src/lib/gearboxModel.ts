@@ -150,6 +150,9 @@ export function restingSleeves(engaged: GearId): Record<HubId, number> {
   return sleeves
 }
 
+/** How far the sleeve gets (fraction of its travel) before it is chattering against the dog faces with no synchro. */
+const GRIND_REACH = 0.8
+
 /** The state of the clutch, sleeves and ring `elapsed` seconds into a shift from `from` to `to`. */
 export function shiftFrame(from: GearId, to: GearId, elapsed: number, synchro: boolean): ShiftFrame {
   const phases = shiftPhases(from, to, synchro)
@@ -186,9 +189,11 @@ export function shiftFrame(from: GearId, to: GearId, elapsed: number, synchro: b
     } else if (phase === 'grind') {
       // No ring: the sleeve goes straight to the dog faces and chatters against them.
       const chatter = 0.06 * Math.sin(p * 90) * (1 - p)
-      pos = 0.8 * smooth(p * 3) + chatter
+      pos = GRIND_REACH * smooth(p * 3) + chatter
     } else if (phase === 'engage') {
-      pos = RING_CONTACT_FRACTION + (1 - RING_CONTACT_FRACTION) * smooth(p)
+      // Pick up from wherever the previous phase left the sleeve: at the ring, or at the dog faces.
+      const start = after('grind') ? GRIND_REACH : RING_CONTACT_FRACTION
+      pos = start + (1 - start) * smooth(p)
     } else if (after('engage')) pos = 1
     if (pos > 0) sleeves[hub] = side * pos
   }
