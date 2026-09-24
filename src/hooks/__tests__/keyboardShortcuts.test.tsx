@@ -40,6 +40,50 @@ describe('ignoreShortcut', () => {
     input.remove()
   })
 
+  it('lets shortcuts through a clicked button, except the keys that press it', () => {
+    const button = document.createElement('button')
+    document.body.append(button)
+    const on = (key: string) => {
+      const e = new KeyboardEvent('keydown', { key })
+      Object.defineProperty(e, 'target', { value: button })
+      return ignoreShortcut(e)
+    }
+    expect(on('c')).toBe(false)
+    expect(on('Escape')).toBe(false)
+    expect(on(' ')).toBe(true)
+    expect(on('Enter')).toBe(true)
+    button.remove()
+  })
+
+  it('leaves a focused slider its arrows but not the other shortcuts', () => {
+    const range = document.createElement('input')
+    range.type = 'range'
+    document.body.append(range)
+    const on = (key: string) => {
+      const e = new KeyboardEvent('keydown', { key })
+      Object.defineProperty(e, 'target', { value: range })
+      return ignoreShortcut(e)
+    }
+    expect(on('ArrowRight')).toBe(true)
+    expect(on(' ')).toBe(false)
+    expect(on('1')).toBe(false)
+    range.remove()
+  })
+
+  it('leaves a key alone once something else claimed it', () => {
+    const e = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+    e.preventDefault()
+    expect(ignoreShortcut(e)).toBe(true)
+  })
+
+  it('ignores a held toggle key but keeps stepping keys repeating', () => {
+    expect(ignoreShortcut(event({ key: ' ', repeat: true }))).toBe(true)
+    expect(ignoreShortcut(event({ key: 'c', repeat: true }))).toBe(true)
+    expect(ignoreShortcut(event({ key: 'ArrowUp', repeat: true }))).toBe(true)
+    expect(ignoreShortcut(event({ key: 'ArrowRight', repeat: true }))).toBe(false)
+    expect(ignoreShortcut(event({ key: '.', repeat: true }))).toBe(false)
+  })
+
   it('bows out inside a contenteditable', () => {
     const div = document.createElement('div')
     div.setAttribute('contenteditable', 'true')

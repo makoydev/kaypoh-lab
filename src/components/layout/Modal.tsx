@@ -14,9 +14,14 @@ interface ModalProps {
 export function Modal({ open, onClose, title, children }: ModalProps) {
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.preventDefault() // claimed: the module's Esc (clear selection) should not also fire
+      onClose()
+    }
+    // Capture phase, so this runs before the module shortcuts listening on window.
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
   }, [open, onClose])
 
   return (
