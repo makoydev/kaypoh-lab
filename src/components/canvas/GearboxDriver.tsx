@@ -16,10 +16,9 @@ export function GearboxDriver() {
     const s = settingsRef.current
     const step = Math.min(dt, 0.1)
     const events = stepGearbox(sim, { engineRpm: s.engineRpm, gear: s.gear, synchro: s.synchro, speed: s.speed, playing: s.playing }, step)
-    if (s.playing) {
-      sim.version++
-      sim.listeners.forEach((l) => l())
-    }
+    // Only bump the version: snapshot hooks poll it at their own fps. Listeners are for discrete
+    // jumps (a paused step), and notifying them here re-rendered the HUD at the display rate.
+    if (s.playing) sim.version++
     if (events.engineRpm !== undefined) update({ engineRpm: events.engineRpm })
     applyGearboxGlow(materials, { selected: s.selectedPart, hovered: s.hoveredPart, path: s.showTorquePath ? torquePathKeys(sim.engaged, sim.clutch) : [] }, step)
   }, -10)

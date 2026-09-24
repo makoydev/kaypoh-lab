@@ -17,10 +17,9 @@ export function EscapementDriver() {
     const s = settingsRef.current
     const step = Math.min(dt, 0.1)
     const events = stepEscapement(sim, { beatRate: s.beatRate, wind: s.wind, regulator: s.regulator, speed: s.speed, playing: s.playing }, step)
-    if (s.playing) {
-      sim.version++
-      sim.listeners.forEach((l) => l())
-    }
+    // Only bump the version: snapshot hooks poll it at their own fps. Listeners are for discrete
+    // jumps (a paused step), and notifying them here re-rendered the HUD at the display rate.
+    if (s.playing) sim.version++
     if (events.tick && s.sound) playTick(events.tick)
     applyEscapementGlow(materials, { selected: s.selectedPart, hovered: s.hoveredPart, path: energyPathKeys(sim.escPhase, sim.pallet) }, step)
   }, -10)
