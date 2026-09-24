@@ -86,6 +86,17 @@ describe('blade rows', () => {
     }
   })
 
+  it('puts each compressor stator behind its rotor and each turbine nozzle ahead of its rotor', () => {
+    for (const stage of ['booster', 'hpCompressor', 'hpTurbine', 'lpTurbine'] as const) {
+      const rows = rowsForStage(stage)
+      const turbine = stage === 'hpTurbine' || stage === 'lpTurbine'
+      for (const rotor of rows.filter((r) => r.kind === 'rotor')) {
+        const stator = rows.find((r) => r.kind === 'stator' && r.index === rotor.index)!
+        expect(stator.x < rotor.x, `${stage} ${rotor.index}`).toBe(turbine)
+      }
+    }
+  })
+
   it('orders core rows front to back with no two rows sharing an axial position', () => {
     const core = BLADE_ROWS.filter((r) => r.stream !== 'bypass')
     for (let i = 1; i < core.length; i++) expect(core[i].x).toBeGreaterThan(core[i - 1].x)

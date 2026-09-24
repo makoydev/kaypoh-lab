@@ -281,17 +281,23 @@ export interface BladeRow {
   stagger: number
 }
 
+/**
+ * Rotor/stator pairs for one multi-stage component. A compressor stage is rotor then stator (the
+ * stator turns the swirl back into pressure); a turbine stage is stator then rotor, because the
+ * nozzle guide vanes must aim the hot gas at the blades before the rotor can take work out of it.
+ */
 function multiStage(
   stage: StageId,
   spool: Spool,
   c: { stages: number; xStart: number; pitch: number; blades: number; chord: number; stagger: number },
+  statorFirst = false,
 ): BladeRow[] {
   const rows: BladeRow[] = []
   for (let i = 0; i < c.stages; i++) {
     const x0 = c.xStart + i * c.pitch
-    const rotorX = x0 + c.pitch * 0.25
-    const statorX = x0 + c.pitch * 0.72
-    rows.push({
+    const rotorX = x0 + c.pitch * (statorFirst ? 0.72 : 0.25)
+    const statorX = x0 + c.pitch * (statorFirst ? 0.25 : 0.72)
+    const rotor: BladeRow = {
       stage,
       index: i,
       kind: 'rotor',
@@ -303,8 +309,8 @@ function multiStage(
       count: c.blades,
       chord: c.chord,
       stagger: c.stagger,
-    })
-    rows.push({
+    }
+    const stator: BladeRow = {
       stage,
       index: i,
       kind: 'stator',
@@ -316,7 +322,8 @@ function multiStage(
       count: Math.round(c.blades * 1.15),
       chord: c.chord * 0.9,
       stagger: -c.stagger * 0.8,
-    })
+    }
+    rows.push(...(statorFirst ? [stator, rotor] : [rotor, stator]))
   }
   return rows
 }
@@ -352,8 +359,8 @@ export const BLADE_ROWS: BladeRow[] = [
   },
   ...multiStage('booster', 'lp', TF.booster),
   ...multiStage('hpCompressor', 'hp', TF.hpCompressor),
-  ...multiStage('hpTurbine', 'hp', TF.hpTurbine),
-  ...multiStage('lpTurbine', 'lp', TF.lpTurbine),
+  ...multiStage('hpTurbine', 'hp', TF.hpTurbine, true),
+  ...multiStage('lpTurbine', 'lp', TF.lpTurbine, true),
 ]
 
 export const rowsForStage = (stage: StageId) => BLADE_ROWS.filter((r) => r.stage === stage)
