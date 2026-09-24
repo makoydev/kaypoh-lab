@@ -64,9 +64,11 @@ describe('ViewModes', () => {
     renderWithEngine(<ViewModes />)
     expect(screen.queryByText(/focus cylinder/i)).not.toBeInTheDocument()
     await user.click(screen.getByText('Piston Focus'))
+    expect(screen.getByRole('button', { name: /piston focus/i })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByText(/focus cylinder/i)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '5' }))
-    expect(screen.getByRole('button', { name: '5' })).toHaveClass('text-accent')
+    expect(screen.getByRole('button', { name: '5' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: '1' })).toHaveAttribute('aria-pressed', 'false')
   })
 
   it('only lets you change the casing in cutaway mode', async () => {

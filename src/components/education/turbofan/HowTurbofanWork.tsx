@@ -56,6 +56,7 @@ export function HowTurbofanWork({ defaultOpen = true }: { defaultOpen?: boolean 
                     <button
                       key={p}
                       type="button"
+                      aria-pressed={selected}
                       onClick={() => {
                         setTab(p)
                         setFollow(false)

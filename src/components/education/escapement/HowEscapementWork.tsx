@@ -61,6 +61,7 @@ export function HowEscapementWork({ defaultOpen = true }: { defaultOpen?: boolea
                     <button
                       key={st}
                       type="button"
+                      aria-pressed={selected}
                       onClick={() => {
                         setTab(st)
                         setFollow(false)

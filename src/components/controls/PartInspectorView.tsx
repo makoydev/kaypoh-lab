@@ -36,6 +36,7 @@ export function PartInspectorView<Id extends string>({ parts, info, icons, selec
             <button
               key={id}
               type="button"
+              aria-pressed={active}
               onClick={() => onSelect(active ? null : id)}
               className={cn(
                 'flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] transition-colors',

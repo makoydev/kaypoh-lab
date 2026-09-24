@@ -32,6 +32,7 @@ export function GearboxViewModes() {
             <button
               key={m.value}
               type="button"
+              aria-pressed={selected}
               onClick={() => update({ viewMode: m.value })}
               className={cn(
                 'flex items-center gap-3 rounded-lg border px-3 py-2 text-left transition-colors',

@@ -33,6 +33,7 @@ export function TurbofanViewModes() {
             <button
               key={m.value}
               type="button"
+              aria-pressed={selected}
               onClick={() => update({ viewMode: m.value })}
               className={cn(
                 'flex items-center gap-3 rounded-lg border px-3 py-2 text-left transition-colors',
@@ -58,6 +59,7 @@ export function TurbofanViewModes() {
               <button
                 key={id}
                 type="button"
+                aria-pressed={focusStage === id}
                 onClick={() => update({ focusStage: id })}
                 title={STAGE_META[id].label}
                 className={cn(

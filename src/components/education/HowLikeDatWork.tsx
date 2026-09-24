@@ -60,6 +60,7 @@ export function HowLikeDatWork({ defaultOpen = true }: { defaultOpen?: boolean }
                     <button
                       key={s}
                       type="button"
+                      aria-pressed={selected}
                       onClick={() => {
                         setTab(s)
                         setSync(false)
